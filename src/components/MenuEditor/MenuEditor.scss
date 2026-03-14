@@ -1,0 +1,144 @@
+@import '../../styles/variables';
+
+.menu-editor {
+    margin-top: 3rem;
+    @include glassmorphism;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: left;
+    animation: slideUp 0.5s ease-out;
+
+    h3 {
+        color: $primary-cyan;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba($primary-cyan, 0.2);
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+
+        &:focus {
+            border-color: $primary-cyan;
+            box-shadow: 0 0 10px rgba($primary-cyan, 0.1);
+            outline: none;
+        }
+    }
+
+    .results-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        gap: 1rem;
+        max-height: 40vh;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+
+        /* Custom Scrollbar */
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba($primary-cyan, 0.3);
+            border-radius: 4px;
+        }
+
+        .food-item-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            &:hover {
+                background: rgba($primary-cyan, 0.1);
+                border-color: rgba($primary-cyan, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .info {
+                h4 {
+                    margin: 0 0 0.25rem 0;
+                    font-size: 1rem;
+                    color: $text-primary;
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 0.85rem;
+                    color: $text-secondary;
+
+                    span {
+                        margin-right: 0.5rem;
+                        color: $primary-cyan;
+                    }
+                }
+            }
+
+            button {
+                background: $primary-cyan;
+                color: $bg-dark;
+                border: none;
+                width: 2rem;
+                height: 2rem;
+                border-radius: 50%;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.2s ease;
+            }
+
+            &:hover button {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delete-btn {
+    background: transparent;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #ff4d4d;
+        color: white;
+    }
+}

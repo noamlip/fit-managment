@@ -1,0 +1,205 @@
+@import '../../styles/variables';
+
+.sidebar {
+    @include glassmorphism;
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    width: 20%;
+    min-width: 12rem;
+    max-width: 18rem;
+    height: 97vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    z-index: 100;
+    border-radius: 0;
+    border-right: 1px solid rgba(0, 242, 255, 0.2);
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+
+    .brand {
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+
+        .logo-icon {
+            color: $primary-cyan;
+            filter: drop-shadow(0 0 5px rgba($primary-cyan, 0.5));
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: $text-primary;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: $text-secondary;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 0.95rem;
+
+            .icon {
+                width: 100%;
+                max-width: 20px;
+                height: auto;
+                aspect-ratio: 1/1;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: $text-primary;
+            }
+
+            &.active {
+                background: rgba($primary-cyan, 0.1);
+                color: $primary-cyan;
+                border-right: 3px solid $primary-cyan;
+            }
+        }
+    }
+
+    .user-profile {
+        margin-top: auto;
+        padding-top: 1.5rem;
+        border-top: 1px solid $border-color;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+
+        .avatar {
+            width: 15%;
+            min-width: 40px;
+            height: auto;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            background: rgba($primary-cyan, 0.2);
+            @include flex-center;
+            color: $primary-cyan;
+            font-weight: 600;
+        }
+
+        .info {
+            flex: 1;
+            overflow: hidden;
+
+            .name {
+                display: block;
+                color: $text-primary;
+                font-weight: 500;
+                font-size: 0.9rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .role {
+                display: block;
+                color: $text-secondary;
+                font-size: 0.75rem;
+            }
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: $text-secondary;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s;
+
+            &:hover {
+                color: #ff4d4d;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: auto;
+        position: sticky;
+        top: 0;
+        flex-direction: row;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        border-right: none;
+        border-bottom: 1px solid rgba($primary-cyan, 0.2);
+        background: rgba(10, 10, 12, 0.95);
+
+        .brand {
+            margin-bottom: 0;
+            margin-right: 1rem;
+
+            h1 {
+                display: none; // Save space
+            }
+        }
+
+        nav {
+            flex-direction: row;
+            flex: 1;
+            justify-content: center;
+
+            .nav-item {
+                padding: 0.5rem;
+                flex-direction: column;
+                gap: 0.2rem;
+                font-size: 0.7rem;
+                text-align: center;
+                border-radius: 6px;
+
+                span {
+                    display: none; // Hide text on small screens if needed, or keep it small
+                }
+
+                width: 100%;
+                max-width: 20px;
+                height: auto;
+                aspect-ratio: 1/1;
+
+                &.active {
+                    border-right: none;
+                    border-bottom: 2px solid $primary-cyan;
+                    background: transparent;
+                }
+            }
+        }
+
+        .user-profile {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+            padding-left: 0.5rem;
+            border-left: 1px solid $border-color;
+
+            .info {
+                display: none;
+            }
+
+            width: 10%;
+            min-width: 32px;
+            height: auto;
+            aspect-ratio: 1/1;
+        }
+    }
+}

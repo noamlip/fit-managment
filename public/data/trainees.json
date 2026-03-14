@@ -1,0 +1,107 @@
+[
+    {
+        "id": "t-1",
+        "name": "Alex Walker",
+        "email": "alex@example.com",
+        "startDate": "2024-01-15",
+        "metrics": {
+            "age": 28,
+            "height": 180,
+            "weight": 85,
+            "gender": "male",
+            "activityLevel": 1.55
+        },
+        "goals": {
+            "targetWeight": 80,
+            "dailyCalories": 2800,
+            "proteinTarget": 200,
+            "carbsTarget": 250,
+            "fatTarget": 80
+        },
+        "lastWorkoutDate": "2024-03-10",
+        "waterIntake": 3.5,
+        "schedule": {},
+        "weightHistory": [
+            {
+                "date": "2026-01-29",
+                "weight": 85.8
+            },
+            {
+                "date": "2026-01-30",
+                "weight": 85.5
+            },
+            {
+                "date": "2026-01-31",
+                "weight": 85.3
+            },
+            {
+                "date": "2026-02-01",
+                "weight": 85
+            },
+            {
+                "date": "2026-02-02",
+                "weight": 84.9
+            },
+            {
+                "date": "2026-02-03",
+                "weight": 85.2
+            },
+            {
+                "date": "2026-02-04",
+                "weight": 85.5
+            }
+        ],
+        "routines": {
+            "push": [
+                {
+                    "id": "ex-1770299788513",
+                    "name": "Barbell Bench Press",
+                    "sets": 3,
+                    "reps": "10",
+                    "rest": 60,
+                    "bodyPart": "Chest"
+                },
+                {
+                    "id": "ex-1770299789285",
+                    "name": "Dumbbell Bench Press",
+                    "sets": 3,
+                    "reps": "10",
+                    "rest": 60,
+                    "bodyPart": "Chest"
+                },
+                {
+                    "id": "ex-1770299790048",
+                    "name": "Incline Bench Press",
+                    "sets": 3,
+                    "reps": "10",
+                    "rest": 60,
+                    "bodyPart": "Chest"
+                }
+            ]
+        }
+    },
+    {
+        "id": "t-2",
+        "name": "Sadrah Fit",
+        "email": "sarah@example.com",
+        "startDate": "2024-02-01",
+        "metrics": {
+            "age": 25,
+            "height": 165,
+            "weight": 62,
+            "gender": "female",
+            "activityLevel": 1.375
+        },
+        "goals": {
+            "targetWeight": 58,
+            "dailyCalories": 2100,
+            "proteinTarget": 140,
+            "carbsTarget": 200,
+            "fatTarget": 60
+        },
+        "lastWorkoutDate": "2024-03-11",
+        "waterIntake": 2.2,
+        "schedule": {},
+        "weightHistory": []
+    }
+]

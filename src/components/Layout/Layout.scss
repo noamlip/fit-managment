@@ -1,0 +1,29 @@
+@import '../../styles/variables';
+
+.layout-container {
+    height: 100vh; // Fixed height
+    overflow: hidden; // Prevent body scroll
+    display: flex;
+    flex-direction: row;
+    background-color: $bg-dark;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 20, 147, 0.03) 0%, transparent 40%);
+
+    .main-content {
+        padding: 2rem;
+        flex: 1; // Take remaining space
+        height: 100%; // Fill container
+        overflow-y: auto; // Scroll internally
+        overflow-x: hidden;
+        max-width: 1600px;
+        animation: fadeIn 0.5s ease-out;
+
+        @media (max-width: 768px) {
+            margin-left: 0;
+            padding: 1rem;
+            width: 100%;
+            overflow-x: hidden;
+        }
+    }
+}

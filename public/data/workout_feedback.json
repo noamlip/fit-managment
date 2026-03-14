@@ -1,0 +1,53 @@
+{
+    "questions": [
+        {
+            "id": "q1",
+            "text": "How was the workout overall?",
+            "type": "scale",
+            "required": true,
+            "config": {
+                "min": 1,
+                "max": 10,
+                "labels": {
+                    "1": "Too Easy",
+                    "10": "Too Hard"
+                }
+            }
+        },
+        {
+            "id": "q2",
+            "text": "What is your current body weight (kg)?",
+            "type": "number",
+            "required": true,
+            "config": {
+                "placeholder": "e.g., 75.5"
+            }
+        },
+        {
+            "id": "q3",
+            "text": "How energetic did you feel?",
+            "type": "scale",
+            "required": true,
+            "config": {
+                "min": 1,
+                "max": 5
+            }
+        },
+        {
+            "id": "q4",
+            "text": "Upload a physique update photo (optional)",
+            "type": "image",
+            "required": false,
+            "config": {}
+        },
+        {
+            "id": "q5",
+            "text": "Any notes or observations?",
+            "type": "text",
+            "required": true,
+            "config": {
+                "placeholder": "Describe how you felt..."
+            }
+        }
+    ]
+}

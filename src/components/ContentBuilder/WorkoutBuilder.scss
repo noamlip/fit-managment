@@ -1,0 +1,218 @@
+@import '../../styles/variables';
+
+.workout-builder-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .builder-content {
+        background: $bg-dark;
+        width: 90%;
+        max-width: 1000px;
+        height: 85vh;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            h2 {
+                margin: 0;
+                color: $primary-cyan;
+            }
+
+            .close-btn {
+                background: none;
+                border: none;
+                color: $text-secondary;
+                cursor: pointer;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: #fff;
+                }
+            }
+        }
+
+        .builder-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+
+            .selection-panel {
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 1.5rem;
+                overflow-y: auto;
+
+                h3 {
+                    margin-top: 0;
+                    margin-bottom: 1rem;
+                }
+
+                .body-part-list {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                    margin-bottom: 1.5rem;
+
+                    button {
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        color: $text-secondary;
+                        padding: 0.5rem 1rem;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.1);
+                        }
+
+                        &.active {
+                            background: rgba($primary-cyan, 0.2);
+                            border-color: $primary-cyan;
+                            color: $primary-cyan;
+                        }
+                    }
+                }
+
+                .exercise-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+
+                    .exercise-item {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 1rem;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: 10px;
+                        border: 1px solid transparent;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            border-color: rgba($primary-cyan, 0.3);
+                            background: rgba(255, 255, 255, 0.02);
+                        }
+                    }
+                }
+            }
+
+            .plan-panel {
+                padding: 1.5rem;
+                overflow-y: auto;
+                background: rgba(0, 0, 0, 0.2);
+
+                h3 {
+                    margin-top: 0;
+                    margin-bottom: 1rem;
+                }
+
+                .exercise-card {
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 12px;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+
+                    .card-header {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 1rem;
+
+                        h4 {
+                            margin: 0;
+                            color: #fff;
+                        }
+
+                        .remove-btn {
+                            color: #ff4d4d;
+                            background: none;
+                            border: none;
+                            cursor: pointer;
+                        }
+                    }
+
+                    .inputs-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 1rem;
+
+                        .input-group {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.3rem;
+
+                            label {
+                                font-size: 0.75rem;
+                                color: $text-secondary;
+                            }
+
+                            input {
+                                background: rgba(0, 0, 0, 0.3);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                color: #fff;
+                                padding: 0.5rem;
+                                border-radius: 6px;
+
+                                &:focus {
+                                    outline: none;
+                                    border-color: $primary-cyan;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+
+            button {
+                padding: 0.8rem 2rem;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 1rem;
+            }
+
+            .cancel-btn {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: $text-primary;
+            }
+
+            .save-btn {
+                background: $primary-cyan;
+                border: none;
+                color: $bg-dark;
+
+                &:hover {
+                    box-shadow: 0 0 20px rgba($primary-cyan, 0.4);
+                }
+            }
+        }
+    }
+}

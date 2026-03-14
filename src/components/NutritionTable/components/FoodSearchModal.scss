@@ -1,0 +1,119 @@
+@import '../NutritionTable.scss';
+
+.food-search-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.food-search-modal {
+    background: #1a1a1a;
+    border: 1px solid #00C49F;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 196, 159, 0.3);
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h3 {
+            margin: 0;
+            color: #00C49F;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+
+            &:hover {
+                color: white;
+            }
+        }
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #333;
+        background: #2a2a2a;
+        color: white;
+        font-size: 1rem;
+        margin-bottom: 20px;
+
+        &:focus {
+            outline: none;
+            border-color: #00C49F;
+        }
+    }
+
+    .results-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .food-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #252525;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #333;
+            }
+
+            .info {
+                display: flex;
+                flex-direction: column;
+
+                .name {
+                    font-weight: bold;
+                    color: white;
+                }
+
+                .macros {
+                    font-size: 0.8rem;
+                    color: #888;
+                }
+            }
+
+            .add-btn {
+                background: #00C49F;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .no-results,
+    .hint {
+        color: #666;
+        text-align: center;
+        padding: 20px;
+    }
+}

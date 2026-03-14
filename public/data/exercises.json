@@ -1,0 +1,52 @@
+{
+    "Chest": [
+        "Barbell Bench Press",
+        "Dumbbell Bench Press",
+        "Incline Bench Press",
+        "Cable Flyes",
+        "Push-Ups",
+        "Dips"
+    ],
+    "Back": [
+        "Pull-Ups",
+        "Lat Pulldowns",
+        "Barbell Rows",
+        "Dumbbell Rows",
+        "Face Pulls",
+        "Deadlift"
+    ],
+    "Legs": [
+        "Barbell Squat",
+        "Leg Press",
+        "Romanian Deadlift",
+        "Leg Extensions",
+        "Leg Curls",
+        "Calf Raises",
+        "Lunges"
+    ],
+    "Shoulders": [
+        "Overhead Press",
+        "Dumbbell Shoulder Press",
+        "Lateral Raises",
+        "Front Raises",
+        "Reverse Pec Deck"
+    ],
+    "Biceps": [
+        "Barbell Curl",
+        "Dumbbell Curl",
+        "Hammer Curl",
+        "Preacher Curl"
+    ],
+    "Triceps": [
+        "Tricep Pushdowns",
+        "Skull Crushers",
+        "Overhead Extensions",
+        "Close-Grip Bench Press"
+    ],
+    "Abs": [
+        "Crunches",
+        "Plank",
+        "Leg Raises",
+        "Russian Twists"
+    ]
+}

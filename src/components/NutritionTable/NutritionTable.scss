@@ -1,0 +1,228 @@
+@import '../../styles/variables';
+
+.nutrition-container {
+    @include glassmorphism;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 2rem auto;
+    width: 95%;
+    max-width: 90vw;
+    animation: fadeIn 0.8s ease-out;
+    padding: 2rem;
+    /* Add padding for internal sections */
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+.nutrition-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 0;
+    /* Override */
+
+    thead {
+        background: rgba($primary-cyan, 0.1);
+
+        th {
+            padding: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: $primary-cyan;
+            border-bottom: 1px solid rgba($primary-cyan, 0.2);
+        }
+    }
+
+    tbody {
+        tr {
+            transition: background 0.2s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            td {
+                padding: 1.2rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                color: $text-secondary;
+
+                &:first-child {
+                    // Item Name
+                    color: $text-primary;
+                    font-weight: 500;
+                }
+
+                input {
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1px solid rgba($primary-cyan, 0.3);
+                    color: white;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    width: 80%;
+                    font-family: inherit;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary-cyan;
+                    }
+                }
+            }
+
+            .drag-handle {
+                cursor: grab;
+                font-size: 1.2rem;
+                opacity: 0.5;
+                transition: opacity 0.2s;
+
+                &:hover {
+                    opacity: 1;
+                    color: $primary-cyan;
+                }
+
+                &:active {
+                    cursor: grabbing;
+                }
+            }
+
+            &:last-child td {
+                border-bottom: none;
+            }
+        }
+    }
+
+    tfoot {
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid rgba($primary-cyan, 0.2);
+
+        tr {
+            td {
+                padding: 1.5rem 1.2rem;
+                font-weight: 700;
+                color: $text-primary;
+
+                &.total-label {
+                    color: $primary-cyan;
+                    text-align: right;
+                    padding-right: 2rem;
+                }
+
+                &.total-value {
+                    color: $primary-cyan;
+                    text-shadow: 0 0 10px rgba($primary-cyan, 0.4);
+                }
+            }
+        }
+    }
+}
+
+.meal-section {
+    margin-bottom: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+
+    .meal-title {
+        color: $primary-cyan;
+        margin: 0 0 1rem 0.5rem;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.grand-total-section {
+    margin-top: 2rem;
+    background: rgba($primary-cyan, 0.15);
+    /* Slightly brighter specific background */
+    border: 1px solid rgba($primary-cyan, 0.3);
+    border-radius: 12px;
+    padding: 0;
+    /* Let table fill it */
+    overflow: hidden;
+
+    .total-label,
+    .total-value {
+        font-size: 1.3rem !important;
+        /* Force larger size */
+        font-weight: 800;
+        text-shadow: 0 0 10px rgba($primary-cyan, 0.5);
+    }
+}
+
+.loading-container {
+    @include flex-center;
+    min-height: 200px;
+    color: $primary-cyan;
+    font-size: 1.2rem;
+
+    .spinner {
+        width: 3vw;
+        height: 3vw;
+        min-width: 30px;
+        min-height: 30px;
+        border: 3px solid rgba($primary-cyan, 0.3);
+        border-top-color: $primary-cyan;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 1rem;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+.error-container {
+    @include glassmorphism;
+    color: #ff4d4d;
+    padding: 2rem;
+    border-radius: 12px;
+    border-color: rgba(255, 77, 77, 0.3);
+    text-align: center;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0 0.5rem;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &.edit {
+        color: #f2ff00;
+    }
+
+    &.save {
+        color: #00ff88;
+    }
+
+    &.cancel {
+        color: #ff9900;
+    }
+
+    &.delete {
+        color: #ff4d4d;
+    }
+}

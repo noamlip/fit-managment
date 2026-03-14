@@ -1,0 +1,435 @@
+@import '../../styles/variables';
+
+.trainee-workout-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+    animation: fadeIn 0.5s ease-out;
+
+    header.panel-header {
+        margin-bottom: 0.5rem;
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, $primary-cyan 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: $text-secondary;
+            margin-top: 0.5rem;
+        }
+    }
+
+    .week-calendar {
+        display: flex;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+
+        .day-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            min-width: 60px;
+
+            .date-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.2rem;
+
+                .day-name {
+                    color: $text-secondary;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                .day-num {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: $text-primary;
+                }
+            }
+
+            .day-circle {
+                width: clamp(35px, 6vw, 45px);
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+
+                &.active-workout {
+                    border-color: $primary-cyan;
+                    background: rgba($primary-cyan, 0.15);
+                    box-shadow: 0 0 10px rgba($primary-cyan, 0.2);
+                }
+
+                &.completed-workout {
+                    border-color: #4ade80;
+                    background: rgba(#4ade80, 0.15);
+                    box-shadow: 0 0 10px rgba(#4ade80, 0.2);
+                    color: #4ade80;
+                }
+
+                .workout-initial {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: $primary-cyan;
+                }
+
+                .status-dot {
+                    width: 40%;
+                    height: 40%;
+                    border-radius: 50%;
+                    background: transparent;
+
+                    &.active {
+                        background: $primary-cyan;
+                        box-shadow: 0 0 10px rgba($primary-cyan, 0.6);
+                    }
+
+                    &.rest {
+                        background: $text-secondary;
+                        opacity: 0.3;
+                    }
+                }
+            }
+
+            .workout-label {
+                font-size: 0.7rem;
+                color: $text-secondary;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            &.active {
+
+                .date-group .day-name,
+                .date-group .day-num {
+                    color: $primary-cyan;
+                }
+
+                .day-circle {
+                    border-color: $primary-cyan;
+                    // If it's already active-workout, it has background. 
+                    // But if it's today, we might want to emphasize? 
+                    // Let's keep the scale effect.
+                    transform: scale(1.1);
+
+                    &:not(.active-workout) {
+                        background: rgba($primary-cyan, 0.1);
+                    }
+                }
+            }
+
+
+        }
+    }
+
+    .required-asterisk {
+        color: #ff4d4d;
+    }
+
+    .weight-tracker-card {
+        @include glassmorphism;
+        padding: 1.5rem;
+        border-radius: 20px;
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+
+            h3 {
+                margin: 0;
+                font-weight: 500;
+            }
+        }
+
+        .current-weight {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: $primary-cyan;
+            text-shadow: 0 0 20px rgba($primary-cyan, 0.3);
+
+            .unit {
+                font-size: 1rem;
+                color: $text-secondary;
+                margin-left: 0.5rem;
+                font-weight: 400;
+                text-shadow: none;
+            }
+        }
+
+        .graph-container {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3/1;
+            position: relative;
+
+            .weight-graph {
+                width: 100%;
+                height: 100%;
+                overflow: visible;
+            }
+
+            .graph-labels {
+                position: absolute;
+                bottom: -25px;
+                width: 100%;
+                height: 20px;
+                pointer-events: none;
+
+                span {
+                    position: absolute;
+                    transform: translateX(-50%);
+                    font-size: 0.75rem;
+                    color: rgba(255, 255, 255, 0.4);
+                }
+            }
+        }
+    }
+
+    .todays-workout-card {
+        @include glassmorphism;
+        padding: 1.5rem;
+        border-radius: 20px;
+
+        .rest-day-view {
+            text-align: center;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .card-header {
+                max-width: fit-content;
+                margin: 0 auto 1rem auto;
+            }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+
+            h3 {
+                margin: 0;
+                font-weight: 500;
+                flex: 1;
+            }
+
+            .tag {
+                background: rgba($primary-cyan, 0.1);
+                color: $primary-cyan;
+                padding: 0.4rem 0.8rem;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                border: 1px solid rgba($primary-cyan, 0.3);
+            }
+        }
+
+        .workout-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+
+            .exercise-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 1rem;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                transition: transform 0.2s;
+
+                &:hover {
+                    transform: translateX(5px);
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .sets {
+                    color: $text-secondary;
+                    font-family: monospace;
+                }
+            }
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, rgba($primary-cyan, 0.8) 0%, rgba($primary-cyan, 1) 100%);
+            border: none;
+            border-radius: 12px;
+            color: $bg-dark;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+
+            &.completed {
+                // Secondary style for editing
+                background: transparent;
+                border: 1px solid $primary-cyan;
+                color: $primary-cyan;
+
+                &:hover {
+                    background: rgba($primary-cyan, 0.1);
+                    box-shadow: 0 0 15px rgba($primary-cyan, 0.2);
+                }
+            }
+
+            &:hover {
+                box-shadow: 0 0 25px rgba($primary-cyan, 0.4);
+                transform: scale(1.02);
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .week-calendar {
+            overflow-x: auto;
+            padding: 1rem;
+
+            .day-item {
+                min-width: 50px;
+            }
+        }
+    }
+
+    .feedback-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .modal-content {
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 3rem;
+            box-sizing: border-box; // Fix scroll issues
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+            h2 {
+                margin-top: 0;
+                color: $text-primary;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .question-group {
+                margin-bottom: 2rem;
+
+                label {
+                    display: block;
+                    margin-bottom: 1rem;
+                    color: $text-secondary;
+                    font-size: 1.1rem;
+                }
+
+                input[type="text"],
+                input[type="number"],
+                textarea {
+                    width: 100%;
+                    padding: 1rem;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 10px;
+                    color: $text-primary;
+                    font-size: 1rem;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $primary-cyan;
+                    }
+                }
+
+                input[type="range"] {
+                    width: 100%;
+                    margin: 1rem 0;
+                }
+
+                .scale-labels {
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 0.8rem;
+                    color: $text-secondary;
+                }
+
+                .file-upload {
+                    border: 2px dashed rgba(255, 255, 255, 0.2);
+                    padding: 2rem;
+                    border-radius: 10px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: border-color 0.2s;
+
+                    &:hover {
+                        border-color: $primary-cyan;
+                    }
+                }
+            }
+
+            .actions {
+                display: flex;
+                gap: 1rem;
+
+                button {
+                    flex: 1;
+                    padding: 1rem;
+                    border-radius: 10px;
+                    border: none;
+                    cursor: pointer;
+                    font-weight: 600;
+
+                    &.submit-btn {
+                        background: $primary-cyan;
+                        color: $bg-dark;
+                    }
+
+                    &.cancel-btn {
+                        background: rgba(255, 255, 255, 0.1);
+                        color: $text-primary;
+                    }
+                }
+            }
+        }
+    }
+}

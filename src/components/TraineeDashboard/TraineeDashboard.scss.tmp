@@ -1,0 +1,131 @@
+@import '../../styles/variables';
+
+.trainee-dashboard {
+    h2 {
+        color: $primary-cyan;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        text-shadow: 0 0 10px rgba($primary-cyan, 0.3);
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+
+        .add-card {
+            @include glassmorphism;
+            @include flex-center;
+            flex-direction: column;
+            min-height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: $text-secondary;
+            border-style: dashed;
+
+            &:hover {
+                border-color: $primary-cyan;
+                color: $primary-cyan;
+                background: rgba($primary-cyan, 0.05);
+            }
+
+            .icon {
+                margin-bottom: 1rem;
+            }
+        }
+
+        .trainee-card {
+            @include glassmorphism;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.2s;
+
+            &:hover {
+                transform: translateY(-5px);
+                @include neon-border;
+            }
+
+            .card-header {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+
+                .avatar {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    background: rgba($primary-cyan, 0.2);
+                    @include flex-center;
+                    color: $primary-cyan;
+                    font-weight: 700;
+                    font-size: 1.2rem;
+                }
+
+                .info {
+                    h3 {
+                        margin: 0;
+                        color: $text-primary;
+                    }
+
+                    p {
+                        margin: 0;
+                        color: $text-secondary;
+                        font-size: 0.85rem;
+                    }
+                }
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+
+                .stat {
+                    background: rgba(0, 0, 0, 0.2);
+                    padding: 0.8rem;
+                    border-radius: 8px;
+
+                    label {
+                        display: block;
+                        font-size: 0.75rem;
+                        color: $text-secondary;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    span {
+                        color: $text-primary;
+                        font-weight: 600;
+                    }
+                }
+            }
+
+            .actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+
+                button {
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: $text-secondary;
+                    padding: 0.5rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+
+                    &:hover {
+                        border-color: $primary-cyan;
+                        color: $primary-cyan;
+                    }
+
+                    &.delete:hover {
+                        border-color: #ff4d4d;
+                        color: #ff4d4d;
+                    }
+                }
+            }
+        }
+    }
+}
