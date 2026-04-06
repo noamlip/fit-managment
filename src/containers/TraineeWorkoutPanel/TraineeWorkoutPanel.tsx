@@ -3,8 +3,6 @@ import { useConfig } from '../../context/ConfigContext';
 import { useTrainee } from '../../context/TraineeContext';
 import { useWorkout } from '../../context/WorkoutContext';
 import { useToast } from '../../context/ToastContext';
-import { WeightChart } from '../../components/WeightChart/WeightChart';
-import { Activity } from 'lucide-react';
 import { FeedbackModal } from '../../components/TraineeWorkoutPanel/FeedbackModal';
 import { TodaysWorkout } from '../../components/TraineeWorkoutPanel/TodaysWorkout';
 import { WeekStrip } from '../../components/TraineeWorkoutPanel/WeekStrip';
@@ -28,7 +26,7 @@ export const TraineeWorkoutPanel: React.FC = () => {
         fetch('/data/workout_feedback.json')
             .then(res => res.json())
             .then(data => setQuestions(data.questions))
-            .catch(err => console.error("Failed to load feedback questions", err));
+            .catch(err => console.error("Failed to load daily feedback questions", err));
     }, []);
 
     const handleFeedbackSubmit = (answers: Record<string, any>) => {
@@ -40,16 +38,6 @@ export const TraineeWorkoutPanel: React.FC = () => {
         if (!activeTrainee) return;
 
         const updates: any = {};
-        const weightQ = questions.find(q => q.text.toLowerCase().includes('weight'));
-        const weightVal = weightQ ? parseFloat(answers[weightQ.id]) : null;
-
-        if (weightVal && !isNaN(weightVal)) {
-            updates.metrics = { ...activeTrainee.metrics, weight: weightVal };
-            const currentHistory = activeTrainee.weightHistory || [];
-            const otherEntries = currentHistory.filter(h => h.date !== todayStr);
-            updates.weightHistory = [...otherEntries, { date: todayStr, weight: weightVal }]
-                .sort((a, b) => a.date.localeCompare(b.date)).slice(-7);
-        }
 
         updates.schedule = {
             ...(activeTrainee.schedule || {}),
@@ -63,7 +51,7 @@ export const TraineeWorkoutPanel: React.FC = () => {
 
         updateTrainee(activeTrainee.id, updates);
         setShowFeedbackModal(false);
-        addToast(isCompleted ? "Feedback updated!" : "Great job! Workout complete.", 'success');
+        addToast(isCompleted ? "Daily feedback updated!" : "Great job! Workout complete.", 'success');
     };
 
     const weekDays = useMemo(() => {
@@ -111,17 +99,6 @@ export const TraineeWorkoutPanel: React.FC = () => {
             </header>
 
             <WeekStrip days={weekDays} />
-
-            <div className="weight-tracker-card">
-                <div className="card-header">
-                    <Activity color="#00C49F" />
-                    <h3>Weight Progress (7 Days)</h3>
-                </div>
-                <WeightChart
-                    history={activeTrainee?.weightHistory || []}
-                    currentWeight={activeTrainee?.metrics.weight || 0}
-                />
-            </div>
 
             <div className="todays-workout-card">
                 <TodaysWorkout

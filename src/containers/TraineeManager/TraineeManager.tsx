@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useToast } from '../../context/ToastContext';
-import { X, Dumbbell, Utensils, Activity, MessageSquare } from 'lucide-react';
+import { ProgressTab } from '../../components/TraineeManager/ProgressTab';
+import { FeedbackTab } from '../../components/TraineeManager/FeedbackTab';
+import { WeeklyCheckinsTab } from '../../components/TraineeManager/WeeklyCheckinsTab';
 import { WorkoutBuilder } from '../../components/ContentBuilder/WorkoutBuilder';
 import { WorkoutsTab } from '../../components/TraineeManager/WorkoutsTab';
 import { NutritionTab } from '../../components/TraineeManager/NutritionTab';
-import { ProgressTab } from '../../components/TraineeManager/ProgressTab';
-import { FeedbackTab } from '../../components/TraineeManager/FeedbackTab';
+import { X, Dumbbell, Utensils, Activity, MessageSquare, ClipboardCheck } from 'lucide-react';
 import type { Trainee, WorkoutType } from '../../types';
 import './TraineeManager.scss';
 
@@ -16,7 +17,7 @@ interface ITraineeManagerProps {
 }
 
 export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClose, onUpdate }) => {
-    const [activeTab, setActiveTab] = useState<'workouts' | 'nutrition' | 'progress' | 'feedback'>('workouts');
+    const [activeTab, setActiveTab] = useState<'workouts' | 'nutrition' | 'progress' | 'feedback' | 'checkins'>('workouts');
     const { addToast } = useToast();
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [showBuilder, setShowBuilder] = useState(false);
@@ -105,7 +106,10 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClos
                         <Activity size={18} /> Progress
                     </button>
                     <button className={activeTab === 'feedback' ? 'active' : ''} onClick={() => setActiveTab('feedback')}>
-                        <MessageSquare size={18} /> Feedback
+                        <MessageSquare size={18} /> Daily Feed
+                    </button>
+                    <button className={activeTab === 'checkins' ? 'active' : ''} onClick={() => setActiveTab('checkins')}>
+                        <ClipboardCheck size={18} /> Check-ins
                     </button>
                 </div>
 
@@ -127,6 +131,7 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClos
                     )}
                     {activeTab === 'progress' && <ProgressTab trainee={trainee} />}
                     {activeTab === 'feedback' && <FeedbackTab trainee={trainee} />}
+                    {activeTab === 'checkins' && <WeeklyCheckinsTab trainee={trainee} />}
                 </div>
             </div>
         </div>

@@ -12,6 +12,7 @@ export interface FoodItem {
 
 export interface NutritionPlan {
     dailyPlan: FoodItem[];
+    mealTitles?: Record<number, string>;
 }
 
 export interface AppConfig {
@@ -43,6 +44,7 @@ export interface TraineeGoals {
     proteinTarget?: number;
     carbsTarget?: number;
     fatTarget?: number;
+    waterTarget?: number; // target in ml
 }
 
 export interface DailyWorkout {
@@ -66,6 +68,20 @@ export interface Trainee {
     schedule?: Record<string, DailyWorkout>; // Key is "YYYY-MM-DD"
     routines?: Record<string, Exercise[]>; // Persistent routines (e.g., routines['push'])
     weightHistory?: WeightRecord[];
+    weeklyFeedback?: WeeklyFeedbackRecord[];
+}
+
+export interface WeeklyFeedbackRecord {
+    date: string; // ISO Date "YYYY-MM-DD"
+    metabolism: number; // 1-10 scale
+    hungerLevel: number; // 1-10 scale
+    injured: boolean;
+    injuryDetails?: string;
+    generalFeeling: number; // 1-10 scale
+    sleepAverage: number; // hours per night
+    workoutDuration: number; // minutes
+    workoutProgression: 'progressing' | 'stuck' | 'decreased';
+    photos?: string[]; // URLs or base64 strings
 }
 
 export interface WeightRecord {
@@ -134,7 +150,7 @@ export interface UserSession {
 
 // --- Feedback System ---
 
-export type FeedbackQuestionType = 'scale' | 'text' | 'number' | 'image';
+export type FeedbackQuestionType = 'scale' | 'emoji_scale' | 'text' | 'number' | 'image';
 
 export interface FeedbackQuestionConfig {
     min?: number;

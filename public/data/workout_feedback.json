@@ -14,19 +14,11 @@
                 }
             }
         },
-        {
-            "id": "q2",
-            "text": "What is your current body weight (kg)?",
-            "type": "number",
-            "required": true,
-            "config": {
-                "placeholder": "e.g., 75.5"
-            }
-        },
+
         {
             "id": "q3",
             "text": "How energetic did you feel?",
-            "type": "scale",
+            "type": "emoji_scale",
             "required": true,
             "config": {
                 "min": 1,

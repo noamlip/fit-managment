@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import type { FoodItem } from '../../../types';
 import { NutritionRow } from './NutritionRow';

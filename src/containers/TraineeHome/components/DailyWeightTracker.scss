@@ -1,0 +1,167 @@
+@import '../../../styles/variables';
+
+.weight-tracker-card {
+    @include glassmorphism;
+    border-radius: 12px;
+    padding: 24px;
+
+    .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            h3 {
+                color: #fff;
+                font-size: 1.2rem;
+                margin: 0;
+            }
+        }
+    }
+
+    .daily-weight-circles {
+        display: flex;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 32px;
+
+        .day-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            min-width: 60px;
+            cursor: pointer;
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+
+            .date-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.2rem;
+
+                .day-name {
+                    color: $text-secondary;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                .day-num {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: $text-primary;
+                }
+            }
+
+            .day-circle {
+                width: clamp(35px, 6vw, 45px);
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+
+                &.active-workout {
+                    border-color: $primary-cyan;
+                    background: rgba($primary-cyan, 0.15);
+                    box-shadow: 0 0 10px rgba($primary-cyan, 0.2);
+                }
+
+                &.completed-workout {
+                    border-color: #4ade80;
+                    background: rgba(#4ade80, 0.15);
+                    box-shadow: 0 0 10px rgba(#4ade80, 0.2);
+                    color: #4ade80;
+                }
+
+                .workout-initial {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: $primary-cyan;
+                }
+
+                .status-dot {
+                    width: 40%;
+                    height: 40%;
+                    border-radius: 50%;
+                    background: transparent;
+
+                    &.active {
+                        background: $primary-cyan;
+                        box-shadow: 0 0 10px rgba($primary-cyan, 0.6);
+                    }
+
+                    &.rest {
+                        background: $text-secondary;
+                        opacity: 0.3;
+                    }
+                }
+            }
+
+            .workout-label {
+                font-size: 0.7rem;
+                color: $text-secondary;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            &.active {
+                .date-group .day-name,
+                .date-group .day-num {
+                    color: $primary-cyan;
+                }
+                
+                .day-circle {
+                    border-color: $primary-cyan;
+                    transform: scale(1.1);
+
+                    &:not(.active-workout) {
+                        background: rgba($primary-cyan, 0.1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .weight-tracker-card {
+        padding: 16px;
+        
+        .card-header-flex .header-title h3 {
+            font-size: 1.1rem;
+        }
+
+        .daily-weight-circles {
+            overflow-x: auto;
+            justify-content: flex-start;
+            gap: 1.5rem;
+            padding-bottom: 2rem; // space for scrollbar
+
+            // Hide scrollbar but keep functionality
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    }
+}

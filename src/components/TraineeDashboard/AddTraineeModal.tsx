@@ -36,7 +36,8 @@ export const AddTraineeModal: React.FC<AddTraineeModalProps> = ({ onClose }) => 
             metrics,
             goals: {
                 targetWeight: metrics.weight, // Default to current
-                dailyCalories: calculated.tdee // Maintenance
+                dailyCalories: calculated.tdee, // Maintenance
+                waterTarget: 3000 // Default 3L
             }
         });
 

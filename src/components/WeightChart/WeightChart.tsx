@@ -11,24 +11,17 @@ export const WeightChart: React.FC<WeightChartProps> = ({ history, currentWeight
     // Determine data points to show (last 7 days or custom range)
     const dataPoints = useMemo(() => {
         if (!history || history.length === 0) {
-            // Fallback: 7 days of 0s if no history exists (User request: "no chance to be true because sadrah have no history")
             const points = [];
             for (let i = 6; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
                 points.push({
                     label: d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }),
-                    val: 0 // Explicit request: 0 if no history
+                    val: currentWeight || 0
                 });
             }
             return points;
         }
-
-        // Fill gaps logic for last 7 days from today?
-        // OR just show the actual history points if we want "per day" accuracy?
-        // The user request "represented per day" likely implies "daily tracking".
-        // Let's stick to the "last 7 days" view as it's standard for dashboards,
-        // but ensuring we have a point for EVERY day.
 
         const points = [];
         const today = new Date();
@@ -38,27 +31,44 @@ export const WeightChart: React.FC<WeightChartProps> = ({ history, currentWeight
             d.setDate(d.getDate() - i);
             const dateStr = d.toISOString().split('T')[0];
 
-            // User request: EXACT MATCH only, otherwise 0
-            const record = history.find(r => r.date === dateStr);
+            // Find exact or nearest past record
+            const validRecords = history.filter(h => h.date <= dateStr).sort((a,b) => b.date.localeCompare(a.date));
+            const val = validRecords.length > 0 ? validRecords[0].weight : (currentWeight || 0);
 
             points.push({
                 label: d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }),
-                val: record ? record.weight : 0
+                val: val
             });
         }
         return points;
     }, [history, currentWeight]);
 
-    const maxWeight = Math.max(...dataPoints.map(d => d.val)) + 1;
-    const minWeight = Math.min(...dataPoints.map(d => d.val)) - 1;
-    const height = 150;
+    const maxVal = Math.max(...dataPoints.map(d => d.val));
+    const minVal = Math.min(...dataPoints.map(d => d.val));
+    
+    // Keep bounds tight around actual weights (e.g. +/- 2kg) so even 0.1kg changes are highly visible.
+    const padding = Math.max(2, (maxVal - minVal) * 0.2);
+    const maxWeight = maxVal + padding;
+    const minWeight = Math.max(0, minVal - padding);
+
+    const height = 300;
     const width = 600;
 
     const getX = (index: number) => (index / (dataPoints.length - 1)) * width;
     const getY = (val: number) => height - ((val - minWeight) / (maxWeight - minWeight)) * height;
 
-    const points = dataPoints.map((d, i) => `${getX(i)},${getY(d.val)}`).join(' ');
-    const areaPath = `${points} ${width},${height} 0,${height}`;
+    const pointsList = dataPoints.map((d, i) => ({ x: getX(i), y: getY(d.val) }));
+    
+    let curvePath = '';
+    if (pointsList.length > 0) {
+        curvePath += `M ${pointsList[0].x},${pointsList[0].y} `;
+        for (let i = 0; i < pointsList.length - 1; i++) {
+            const current = pointsList[i];
+            const next = pointsList[i + 1];
+            const tension = (next.x - current.x) / 2;
+            curvePath += `C ${current.x + tension},${current.y} ${next.x - tension},${next.y} ${next.x},${next.y} `;
+        }
+    }
 
     const [hoveredPoint, setHoveredPoint] = React.useState<{ x: number, y: number, val: number } | null>(null);
 
@@ -76,12 +86,12 @@ export const WeightChart: React.FC<WeightChartProps> = ({ history, currentWeight
                         <stop offset="100%" stopColor="#00f2ff" stopOpacity="0" />
                     </linearGradient>
                 </defs>
-                <path d={`M0,${height} ${areaPath} Z`} fill="url(#chartGradient)" />
-                <polyline
+                <path d={`${curvePath} L${width},${height} L0,${height} Z`} fill="url(#chartGradient)" />
+                <path
+                    d={curvePath}
                     fill="none"
                     stroke="#00f2ff"
                     strokeWidth="3"
-                    points={points}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 />

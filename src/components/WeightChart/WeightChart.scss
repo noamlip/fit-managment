@@ -25,7 +25,7 @@
         overflow: visible;
         width: 100%;
         height: auto;
-        aspect-ratio: 3/1;
+        aspect-ratio: 2/1;
 
         .chart-point {
             cursor: pointer;
@@ -51,5 +51,17 @@
     .chart-tooltip {
         pointer-events: none;
         transition: opacity 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.5rem;
+        
+        .current-stat .val {
+            font-size: 1.5rem;
+        }
+
+        .chart-labels span {
+            font-size: 0.6rem;
+        }
     }
 }

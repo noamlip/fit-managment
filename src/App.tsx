@@ -9,6 +9,7 @@ import { Layout } from './components/Layout/Layout';
 import { TraineeDashboard } from './components/TraineeDashboard/TraineeDashboard';
 import { WorkoutLibrary } from './containers/WorkoutLibrary/WorkoutLibrary';
 import { TraineeWorkoutPanel } from './containers/TraineeWorkoutPanel/TraineeWorkoutPanel';
+import { TraineeHome } from './containers/TraineeHome/TraineeHome';
 import { Settings } from './components/Settings/Settings';
 // import './App.scss'; // Layout handles styles now
 
@@ -18,11 +19,7 @@ const Content = () => {
 
   // Reset active page on login
   useEffect(() => {
-    if (userRole === 'coach') {
-      setActivePage('dashboard');
-    } else {
-      setActivePage('nutrition');
-    }
+    setActivePage('dashboard');
   }, [userRole]);
 
   // If no trainer selected, show login screen
@@ -33,8 +30,8 @@ const Content = () => {
   // Once logged in, show the Layout
   return (
     <Layout activePage={activePage} onNavigate={setActivePage}>
-      {activePage === 'dashboard' && userRole === 'coach' && (
-        <TraineeDashboard />
+      {activePage === 'dashboard' && (
+        userRole === 'coach' ? <TraineeDashboard /> : <TraineeHome />
       )}
 
       {activePage === 'workouts' && (

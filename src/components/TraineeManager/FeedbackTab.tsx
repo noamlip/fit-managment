@@ -81,6 +81,11 @@ export const FeedbackTab: React.FC<IFeedbackTabProps> = ({ trainee }) => {
                                                             Rating: <strong>{answer}</strong>/10
                                                         </span>
                                                     )}
+                                                    {q.type === 'emoji_scale' && (
+                                                        <span className="scale-display" style={{ fontSize: '1.5rem' }}>
+                                                            {String(answer) === '1' ? '😴' : String(answer) === '2' ? '🥱' : String(answer) === '3' ? '😐' : String(answer) === '4' ? '🙂' : String(answer) === '5' ? '🤩' : '😐'}
+                                                        </span>
+                                                    )}
                                                     {q.type === 'image' && (
                                                         <span className="image-placeholder">
                                                             [Image Uploaded]

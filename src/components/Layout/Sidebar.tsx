@@ -26,13 +26,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate }) => {
             </div>
 
             <nav>
-                {userRole === 'coach' && (
+                {userRole === 'coach' ? (
                     <div
                         className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
                         onClick={() => onNavigate('dashboard')}
                     >
                         <LayoutDashboard className="icon" />
                         <span>Dashboard</span>
+                    </div>
+                ) : (
+                    <div
+                        className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
+                        onClick={() => onNavigate('dashboard')}
+                    >
+                        <LayoutDashboard className="icon" />
+                        <span>Home</span>
                     </div>
                 )}
 
