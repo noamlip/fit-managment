@@ -3,17 +3,13 @@ name: Node.js CI & Deploy
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # Removed pull_request trigger to prevent unnecessary build attempts for Pages
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -35,16 +31,16 @@ jobs:
         run: npm ci
 
       - name: Build project
+        # This runs "tsc -b && vite build" as defined in your package.json
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # IMPORTANT: Change this to './build' if you are using Create React App
+          # Vite always outputs to 'dist' by default
           path: ./dist
 
   deploy:
-    # Only run this job on pushes to main, not on pull requests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
