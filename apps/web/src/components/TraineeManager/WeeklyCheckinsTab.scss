@@ -1,0 +1,289 @@
+@import '../../styles/variables';
+
+.weekly-checkins-tab {
+    display: flex;
+    height: 100%;
+    gap: 1.5rem;
+    color: white;
+
+    .checkins-sidebar {
+        width: 180px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 12px;
+        overflow-y: auto;
+
+        .checkin-item {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: $text-secondary;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: white;
+            }
+
+            &.needs-review {
+                font-weight: 700;
+                border-color: rgba($primary-cyan, 0.45);
+            }
+
+            .needs-review-chip {
+                margin-left: auto;
+                font-size: 0.65rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding: 2px 8px;
+                border-radius: 999px;
+                background: rgba($primary-cyan, 0.2);
+                color: $primary-cyan;
+            }
+
+            &.active {
+                background: rgba($primary-cyan, 0.15);
+                border-color: $primary-cyan;
+                color: $primary-cyan;
+                font-weight: 600;
+            }
+
+            span {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    .checkin-details {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 1.5rem;
+        overflow-y: auto;
+
+        .details-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+
+            h3 {
+                margin: 0;
+                font-size: 1.4rem;
+                color: $primary-cyan;
+            }
+        }
+
+        .checkin-summary-card {
+            @include glassmorphism;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba($primary-cyan, 0.25);
+
+            h4 {
+                margin: 0 0 1rem;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: $primary-cyan;
+            }
+
+            .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
+
+                label {
+                    display: block;
+                    font-size: 0.7rem;
+                    color: $text-secondary;
+                    text-transform: uppercase;
+                    letter-spacing: 0.04em;
+                    margin-bottom: 4px;
+                }
+
+                span {
+                    font-size: 1.05rem;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .structured-photo-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+
+            .structured-photo-item {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                .photo-label {
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: $text-secondary;
+                }
+            }
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+
+            .metric-card {
+                @include glassmorphism;
+                padding: 1.5rem;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                    flex-shrink: 0;
+                }
+
+                .icon-metabolism { color: #4ade80; }
+                .icon-feeling { color: #ffeb3b; }
+                .icon-sleep { color: #fbbf24; }
+                .icon-hunger { color: #fb7185; }
+                .icon-time { color: #3b82f6; }
+                .icon-progression { color: #c084fc; }
+                .icon-injury { color: #888; }
+
+                .info {
+                    flex: 1;
+                    label {
+                        display: block;
+                        font-size: 0.8rem;
+                        color: $text-secondary;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        margin-bottom: 4px;
+                    }
+
+                    .value {
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                    }
+
+                    .score {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        .progress-bar {
+                            flex: 1;
+                            height: 6px;
+                            background: rgba(255, 255, 255, 0.1);
+                            border-radius: 3px;
+                            overflow: hidden;
+
+                            .fill {
+                                height: 100%;
+                                background: #4ade80;
+                                border-radius: 3px;
+                            }
+                        }
+
+                        span {
+                            font-size: 0.9rem;
+                            font-weight: 700;
+                            min-width: 35px;
+                        }
+                    }
+                }
+
+                &.injury-status.has-injury {
+                    background: rgba($error-red, 0.1);
+                    border-color: rgba($error-red, 0.3);
+                    .icon-injury { color: $error-red; }
+                    .value { color: $error-red; }
+                }
+
+                &.progression-status.stuck {
+                    border-color: rgba(251, 191, 36, 0.3);
+                    .icon-progression { color: #fbbf24; }
+                }
+
+                &.progression-status.decreased {
+                    background: rgba($error-red, 0.05);
+                    border-color: rgba($error-red, 0.3);
+                    .icon-progression { color: $error-red; }
+                    .value { color: $error-red; }
+                }
+            }
+        }
+
+        .detail-section {
+            margin-top: 2rem;
+
+            h4 {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 1rem;
+                color: white;
+                margin-bottom: 1rem;
+            }
+
+            .text-box {
+                background: rgba(0, 0, 0, 0.2);
+                padding: 1rem;
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                line-height: 1.6;
+                color: $text-secondary;
+            }
+
+            .photo-gallery {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+
+                .gallery-item {
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }
+    }
+
+    .empty-state {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        color: $text-secondary;
+        opacity: 0.5;
+    }
+}

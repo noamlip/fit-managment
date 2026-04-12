@@ -1,0 +1,25 @@
+{
+  "name": "anti-gravity-training-portal",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "nx": "nx",
+    "install:all": "npm install",
+    "dev:all": "concurrently -k -n web,api -c cyan,magenta \"npm run dev -w @anti-gravity/web\" \"npm run dev -w @anti-gravity/api\"",
+    "run:all": "npm run dev:all",
+    "build": "nx run web:build",
+    "build:all": "nx run-many -t build --projects=web",
+    "dev:web": "nx run web:dev",
+    "dev:api": "nx run api:dev",
+    "lint": "nx run web:lint",
+    "typecheck:api": "nx run api:typecheck",
+    "graph": "nx graph"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nx": "~21.6.0"
+  }
+}

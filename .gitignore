@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+.nx/cache
+.nx/workspace-data
+coverage
+*.log
+.env
+.env.*.local
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json

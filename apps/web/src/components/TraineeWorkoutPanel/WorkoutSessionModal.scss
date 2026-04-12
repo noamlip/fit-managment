@@ -1,0 +1,234 @@
+@import '../../styles/variables';
+
+.workout-session-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(8px);
+
+    .session-panel {
+        width: min(520px, 100%);
+        max-height: min(92vh, 720px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        @include glassmorphism;
+        border-radius: 20px;
+        border: 1px solid rgba($primary-cyan, 0.3);
+        box-shadow: 0 0 40px rgba(0, 242, 255, 0.12);
+    }
+
+    .session-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            color: $primary-cyan;
+        }
+
+        .timers {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            font-variant-numeric: tabular-nums;
+
+            .elapsed {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: $text-primary;
+            }
+
+            .elapsed-label {
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: $text-secondary;
+            }
+        }
+
+        .close-session {
+            width: 100%;
+            margin-top: 0.25rem;
+            button {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.8rem;
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                background: transparent;
+                color: $text-secondary;
+                cursor: pointer;
+
+                &:hover {
+                    color: #f87171;
+                    border-color: rgba(248, 113, 113, 0.4);
+                }
+            }
+        }
+    }
+
+    .session-body {
+        padding: 1.25rem 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .phase-rest {
+        text-align: center;
+        padding: 1rem 0;
+
+        .rest-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: $text-secondary;
+            margin-bottom: 0.5rem;
+        }
+
+        .rest-count {
+            font-size: 3rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: $primary-cyan;
+            line-height: 1.2;
+            margin-bottom: 1.25rem;
+        }
+
+        .add-rest-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+
+            button {
+                padding: 0.65rem 1.1rem;
+                border-radius: 10px;
+                border: 1px solid rgba($primary-cyan, 0.35);
+                background: rgba($primary-cyan, 0.1);
+                color: $primary-cyan;
+                font-weight: 600;
+                cursor: pointer;
+
+                &:hover {
+                    background: rgba($primary-cyan, 0.2);
+                }
+            }
+        }
+
+        .skip-rest {
+            background: transparent;
+            border: none;
+            color: $text-secondary;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.85rem;
+
+            &:hover {
+                color: white;
+            }
+        }
+    }
+
+    .phase-work {
+        .exercise-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 0.35rem;
+            color: $text-primary;
+        }
+
+        .exercise-meta {
+            font-size: 0.85rem;
+            color: $text-secondary;
+            margin-bottom: 1.25rem;
+        }
+
+        .field {
+            margin-bottom: 1rem;
+
+            label {
+                display: block;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: $text-secondary;
+                margin-bottom: 6px;
+            }
+
+            input {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border-radius: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                background: rgba(0, 0, 0, 0.25);
+                color: $text-primary;
+                font-size: 1rem;
+
+                &:focus {
+                    outline: none;
+                    border-color: rgba($primary-cyan, 0.5);
+                }
+            }
+        }
+
+        .complete-set-btn {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.9rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, $primary-cyan, darken($primary-cyan, 12%));
+            color: #0a0a0a;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+
+            &:hover {
+                filter: brightness(1.05);
+            }
+        }
+    }
+
+    .phase-done {
+        text-align: center;
+        padding: 1rem 0 0.5rem;
+
+        p {
+            color: $text-secondary;
+            margin: 0 0 1.25rem;
+        }
+
+        .finish-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #4ade80, darken(#4ade80, 15%));
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+        }
+    }
+
+    .progress-hint {
+        margin-top: 1.25rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.8rem;
+        color: $text-secondary;
+    }
+}

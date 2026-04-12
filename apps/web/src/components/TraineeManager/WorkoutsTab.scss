@@ -1,0 +1,283 @@
+@import '../../styles/variables';
+
+.workouts-tab-coach {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .retro-strip-wrap {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+
+        h4 {
+            margin: 0 0 0.75rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: $text-secondary;
+        }
+
+        .retro-strip {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .retro-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 44px;
+
+            .dot {
+                width: 28px;
+                height: 28px;
+                border-radius: 8px;
+                border: 2px solid rgba(255, 255, 255, 0.15);
+            }
+
+            &.done .dot {
+                background: rgba(74, 222, 128, 0.35);
+                border-color: #4ade80;
+            }
+
+            &.missed .dot {
+                background: rgba(248, 113, 113, 0.35);
+                border-color: #f87171;
+            }
+
+            &.neutral .dot {
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            .lbl {
+                font-size: 0.7rem;
+                color: $text-secondary;
+                text-transform: uppercase;
+            }
+
+            .num {
+                font-size: 0.75rem;
+                color: rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .retro-legend {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: $text-secondary;
+
+            span {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .lg {
+                width: 10px;
+                height: 10px;
+                border-radius: 3px;
+                display: inline-block;
+
+                &.g {
+                    background: #4ade80;
+                }
+                &.r {
+                    background: #f87171;
+                }
+                &.n {
+                    background: rgba(255, 255, 255, 0.15);
+                }
+            }
+        }
+    }
+
+    .feedback-highlights {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+
+        .fb-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+
+            h4 {
+                margin: 0;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: $text-secondary;
+            }
+
+            .new-badge {
+                font-size: 0.75rem;
+                font-weight: 700;
+                padding: 4px 10px;
+                border-radius: 999px;
+                background: rgba($primary-cyan, 0.2);
+                color: $primary-cyan;
+                border: 1px solid rgba($primary-cyan, 0.35);
+            }
+
+            .mark-seen {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.06);
+                color: $text-secondary;
+                cursor: pointer;
+
+                &:hover {
+                    color: white;
+                    border-color: rgba($primary-cyan, 0.4);
+                }
+            }
+        }
+
+        .fb-row {
+            padding: 0.65rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.85rem;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .fb-date {
+                color: $primary-cyan;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .fb-sev {
+                display: inline-block;
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding: 2px 8px;
+                border-radius: 4px;
+                margin-bottom: 6px;
+
+                &.alert {
+                    background: rgba(248, 113, 113, 0.2);
+                    color: #fecaca;
+                }
+                &.warning {
+                    background: rgba(251, 191, 36, 0.15);
+                    color: #fde68a;
+                }
+            }
+
+            .fb-summary {
+                color: $text-secondary;
+                line-height: 1.45;
+            }
+        }
+
+        .fb-empty {
+            margin: 0;
+            font-size: 0.85rem;
+            color: $text-secondary;
+            opacity: 0.7;
+        }
+    }
+
+    .coach-session-log {
+        margin-top: 1.25rem;
+        padding: 1.25rem 1.5rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba($primary-cyan, 0.2);
+        border-radius: 12px;
+        color: white;
+
+        h4 {
+            margin: 0 0 0.5rem;
+            font-size: 0.95rem;
+            color: $primary-cyan;
+        }
+
+        .session-in-progress {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #fbbf24;
+        }
+
+        .session-meta {
+            margin: 0 0 1rem;
+            font-size: 0.8rem;
+            color: $text-secondary;
+            line-height: 1.4;
+        }
+
+        .session-rest-extensions {
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+
+            strong {
+                display: block;
+                margin-bottom: 0.35rem;
+                color: $text-primary;
+            }
+
+            ul {
+                margin: 0;
+                padding-left: 1.2rem;
+                color: $text-secondary;
+            }
+        }
+
+        .session-exercises {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .session-ex-block {
+            .session-ex-name {
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+
+                .muted {
+                    font-weight: 400;
+                    color: $text-secondary;
+                    font-size: 0.85rem;
+                }
+            }
+
+            .session-sets-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.8rem;
+
+                th,
+                td {
+                    padding: 6px 10px;
+                    text-align: left;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                }
+
+                th {
+                    color: $text-secondary;
+                    text-transform: uppercase;
+                    font-size: 0.65rem;
+                    letter-spacing: 0.05em;
+                }
+            }
+        }
+    }
+}
