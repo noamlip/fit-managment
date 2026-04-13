@@ -1,0 +1,24 @@
+@use '../../styles/variables' as *;
+
+.nutrition-table-wrap {
+    @include glassmorphism;
+    padding: 1.25rem;
+    border-radius: 12px;
+    h3 {
+        color: $primary-cyan;
+        margin-top: 0;
+    }
+    table {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+    th {
+        color: $text-secondary;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+    td {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid $border-color;
+    }
+}

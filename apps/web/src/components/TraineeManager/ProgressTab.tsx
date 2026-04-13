@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Trainee } from '../../types';
 import { GoalsOverview } from '../../containers/TraineeHome/components/GoalsOverview';
 import { DailyWeightTracker } from '../../containers/TraineeHome/components/DailyWeightTracker';

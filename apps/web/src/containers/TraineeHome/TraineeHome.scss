@@ -1,0 +1,8 @@
+@use '../../styles/variables' as *;
+
+.trainee-home {
+    animation: fadeIn 0.5s ease-out;
+    h1 {
+        color: $primary-cyan;
+    }
+}

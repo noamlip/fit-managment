@@ -65,13 +65,6 @@ export type FeedbackAnswerValue = string | number | boolean | File;
 
 export type FeedbackAnswers = Record<string, FeedbackAnswerValue>;
 
-/** Extra rest requested during a guided session (logged for the coach). */
-export interface RestExtensionEvent {
-    /** Seconds since session start when the trainee added rest */
-    atElapsedSeconds: number;
-    addedSeconds: number;
-}
-
 export interface LoggedSet {
     setIndex: number;
     weightKg?: number;
@@ -85,23 +78,26 @@ export interface LoggedExercise {
     sets: LoggedSet[];
 }
 
-/** Saved on `DailyWorkout` after a guided session; optional `endedAt` while in progress. */
+export interface WorkoutSessionRestExtension {
+    atElapsedSeconds: number;
+    addedSeconds: number;
+}
+
+export interface WorkoutSessionDraftCursor {
+    exerciseIndex: number;
+    setIndex: number;
+    phase: 'work' | 'rest';
+    restEndsAt?: string;
+}
+
+/** Logged in-workout data (weights, rest extensions); persisted on `DailyWorkout` */
 export interface WorkoutSessionLog {
     startedAt: string;
     endedAt?: string;
     totalElapsedSeconds?: number;
     exercises: LoggedExercise[];
-    restExtensions?: RestExtensionEvent[];
-    /** In-progress UI state for resume after refresh */
+    restExtensions?: WorkoutSessionRestExtension[];
     draftCursor?: WorkoutSessionDraftCursor;
-}
-
-export interface WorkoutSessionDraftCursor {
-    exerciseIndex: number;
-    /** 1-based next set to perform (or current target in work phase) */
-    setIndex: number;
-    phase: 'work' | 'rest';
-    restEndsAt?: string;
 }
 
 export interface DailyWorkout {
@@ -109,7 +105,6 @@ export interface DailyWorkout {
     status: 'pending' | 'completed' | 'skipped';
     feedback?: Record<string, FeedbackAnswerValue>;
     exercises?: Exercise[];
-    /** Guided session: weights, rest extensions, timers */
     sessionLog?: WorkoutSessionLog;
 }
 

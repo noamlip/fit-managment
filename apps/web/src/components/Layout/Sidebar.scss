@@ -1,0 +1,95 @@
+@use '../../styles/variables' as *;
+
+.sidebar {
+    @include glassmorphism;
+    width: 20%;
+    min-width: 12rem;
+    max-width: 18rem;
+    height: 97vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    z-index: 100;
+    border-right: 1px solid rgba($primary-cyan, 0.2);
+    border-radius: 0;
+
+    .brand {
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        .logo-icon {
+            color: $primary-cyan;
+        }
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+        }
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        flex: 1;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: $text-secondary;
+            border-radius: 8px;
+            cursor: pointer;
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: #fff;
+            }
+            &.active {
+                background: rgba($primary-cyan, 0.1);
+                color: $primary-cyan;
+                border-right: 3px solid $primary-cyan;
+            }
+        }
+    }
+
+    .user-profile {
+        margin-top: auto;
+        padding-top: 1.5rem;
+        border-top: 1px solid $border-color;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba($primary-cyan, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $primary-cyan;
+            font-weight: 600;
+        }
+        .info .name {
+            display: block;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        .info .role {
+            font-size: 0.75rem;
+            color: $text-secondary;
+        }
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: $text-secondary;
+            cursor: pointer;
+            margin-left: auto;
+            &:hover {
+                color: $error-red;
+            }
+        }
+    }
+}

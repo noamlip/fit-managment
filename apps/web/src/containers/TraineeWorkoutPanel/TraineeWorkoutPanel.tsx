@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 import { useTrainee } from '../../context/TraineeContext';
 import { useWorkout } from '../../context/WorkoutContext';
@@ -8,7 +8,6 @@ import { FeedbackModal } from '../../components/TraineeWorkoutPanel/FeedbackModa
 import { WorkoutSessionModal } from '../../components/TraineeWorkoutPanel/WorkoutSessionModal';
 import type { DailyWorkout, Exercise, FeedbackAnswers, WorkoutSessionLog } from '../../types';
 import { serializeFeedbackForStorage } from '../../lib/serializeFeedback';
-import { debounce } from '../../lib/debounce';
 import { TodaysWorkout } from '../../components/TraineeWorkoutPanel/TodaysWorkout';
 import { WeekStrip } from '../../components/TraineeWorkoutPanel/WeekStrip';
 import './TraineeWorkoutPanel.scss';
@@ -32,10 +31,8 @@ export const TraineeWorkoutPanel: React.FC = () => {
 
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [showSessionModal, setShowSessionModal] = useState(false);
-    const sessionLogRef = useRef<WorkoutSessionLog | null>(null);
+
     const activeTrainee = useMemo(() => trainees.find((t) => t.name === trainerName), [trainees, trainerName]);
-    const activeTraineeRef = useRef(activeTrainee);
-    activeTraineeRef.current = activeTrainee;
     const todayStr = new Date().toISOString().split('T')[0];
     const todaysSchedule = activeTrainee?.schedule?.[todayStr];
     const isCompleted = todaysSchedule?.status === 'completed';
@@ -43,82 +40,38 @@ export const TraineeWorkoutPanel: React.FC = () => {
     const planExercises: Exercise[] = useMemo(() => {
         if (!todaysSchedule || todaysSchedule.workoutType === 'rest') return [];
         const template = templates.find((t) => t.type === todaysSchedule.workoutType);
-        return todaysSchedule.exercises?.length
-            ? todaysSchedule.exercises
-            : template?.exercises ?? [];
+        if (todaysSchedule.exercises && todaysSchedule.exercises.length > 0) {
+            return todaysSchedule.exercises;
+        }
+        return template?.exercises || [];
     }, [todaysSchedule, templates]);
 
-    const debouncedPersistDraft = useMemo(
-        () =>
-            debounce((log: WorkoutSessionLog) => {
-                const t = activeTraineeRef.current;
-                if (!t) return;
-                const day = t.schedule?.[todayStr];
-                updateTrainee(t.id, {
-                    schedule: {
-                        ...t.schedule,
-                        [todayStr]: {
-                            ...(day || { workoutType: 'other', status: 'pending' }),
-                            sessionLog: log,
-                        },
-                    },
-                });
-            }, 800),
-        [updateTrainee, todayStr]
-    );
+    const resumeLog = useMemo(() => {
+        const log = todaysSchedule?.sessionLog;
+        if (!log || log.endedAt) return null;
+        return log;
+    }, [todaysSchedule?.sessionLog]);
 
-    useEffect(() => {
-        return () => {
-            debouncedPersistDraft.cancel();
-        };
-    }, [debouncedPersistDraft]);
-
-    const handlePersistDraft = useCallback(
+    const persistSessionDraft = useCallback(
         (log: WorkoutSessionLog) => {
-            debouncedPersistDraft(log);
-        },
-        [debouncedPersistDraft]
-    );
-
-    const handleStartClick = () => {
-        if (isCompleted) {
-            setShowFeedbackModal(true);
-            return;
-        }
-        if (todaysSchedule?.sessionLog?.endedAt && todaysSchedule.status === 'pending') {
-            setShowFeedbackModal(true);
-            return;
-        }
-        if (planExercises.length === 0) {
-            addToast('No exercises in today’s workout. Ask your coach to assign exercises.', 'info');
-            return;
-        }
-        setShowSessionModal(true);
-    };
-
-    const handleSessionFinish = (log: WorkoutSessionLog) => {
-        debouncedPersistDraft.cancel();
-        sessionLogRef.current = log;
-        const t = activeTraineeRef.current;
-        if (!t) return;
-        const day = t.schedule?.[todayStr];
-        updateTrainee(t.id, {
-            schedule: {
-                ...t.schedule,
-                [todayStr]: {
-                    ...(day || { workoutType: 'other', status: 'pending' }),
-                    sessionLog: log,
+            if (!activeTrainee) return;
+            const base: DailyWorkout = todaysSchedule || {
+                workoutType: planExercises.length ? 'other' : 'rest',
+                status: 'pending',
+            };
+            updateTrainee(activeTrainee.id, {
+                schedule: {
+                    ...(activeTrainee.schedule || {}),
+                    [todayStr]: {
+                        ...base,
+                        exercises: base.exercises?.length ? base.exercises : planExercises,
+                        sessionLog: { ...log },
+                    },
                 },
-            },
-        });
-        setShowSessionModal(false);
-        setShowFeedbackModal(true);
-    };
-
-    const handleSessionCancel = () => {
-        debouncedPersistDraft.flush();
-        setShowSessionModal(false);
-    };
+            });
+        },
+        [activeTrainee, todaysSchedule, todayStr, planExercises, updateTrainee]
+    );
 
     const handleFeedbackSubmit = (answers: FeedbackAnswers) => {
         const missing = questions.some((q) => q.required && (answers[q.id] === undefined || answers[q.id] === ''));
@@ -126,27 +79,24 @@ export const TraineeWorkoutPanel: React.FC = () => {
             addToast('Please answer all questions before submitting.', 'error');
             return;
         }
-        const t = activeTraineeRef.current;
-        if (!t) return;
+        if (!activeTrainee) return;
 
         const persistedFeedback = serializeFeedbackForStorage(answers);
-        const day = t.schedule?.[todayStr] ?? todaysSchedule;
 
         const nextSchedule: Record<string, DailyWorkout> = {
-            ...(t.schedule || {}),
+            ...(activeTrainee.schedule || {}),
             [todayStr]: {
-                ...(day || { workoutType: 'other', status: 'pending' }),
+                ...(todaysSchedule || { workoutType: 'other', status: 'pending' }),
                 status: 'completed',
                 feedback: persistedFeedback,
-                sessionLog: sessionLogRef.current ?? day?.sessionLog,
+                sessionLog: todaysSchedule?.sessionLog,
             },
         };
 
-        updateTrainee(t.id, {
+        updateTrainee(activeTrainee.id, {
             schedule: nextSchedule,
             lastWorkoutDate: todayStr,
         });
-        sessionLogRef.current = null;
         setShowFeedbackModal(false);
         addToast(isCompleted ? 'Daily feedback updated!' : 'Great job! Workout complete.', 'success');
     };
@@ -187,10 +137,38 @@ export const TraineeWorkoutPanel: React.FC = () => {
         return {};
     }, [todaysSchedule]);
 
-    const resumeLog =
-        todaysSchedule?.sessionLog && !todaysSchedule.sessionLog.endedAt
-            ? todaysSchedule.sessionLog
-            : null;
+    const onStartWorkout = () => {
+        if (isCompleted) {
+            setShowFeedbackModal(true);
+            return;
+        }
+        if (planExercises.length === 0) {
+            addToast('No exercises scheduled for today.', 'warning');
+            return;
+        }
+        setShowSessionModal(true);
+    };
+
+    const handleSessionFinish = (log: WorkoutSessionLog) => {
+        if (!activeTrainee) return;
+        const base: DailyWorkout = todaysSchedule || { workoutType: planExercises[0] ? 'other' : 'rest', status: 'pending' };
+        updateTrainee(activeTrainee.id, {
+            schedule: {
+                ...(activeTrainee.schedule || {}),
+                [todayStr]: {
+                    ...base,
+                    exercises: base.exercises?.length ? base.exercises : planExercises,
+                    sessionLog: log,
+                },
+            },
+        });
+        setShowSessionModal(false);
+        setShowFeedbackModal(true);
+    };
+
+    const handleSessionCancel = () => {
+        setShowSessionModal(false);
+    };
 
     return (
         <div className="trainee-workout-panel">
@@ -201,7 +179,7 @@ export const TraineeWorkoutPanel: React.FC = () => {
                     resumeLog={resumeLog}
                     onCancel={handleSessionCancel}
                     onFinish={handleSessionFinish}
-                    onPersistDraft={handlePersistDraft}
+                    onPersistDraft={persistSessionDraft}
                 />
             )}
             {showFeedbackModal && (
@@ -227,7 +205,7 @@ export const TraineeWorkoutPanel: React.FC = () => {
                     schedule={todaysSchedule}
                     templates={templates}
                     isCompleted={isCompleted}
-                    onStart={handleStartClick}
+                    onStart={onStartWorkout}
                 />
             </div>
         </div>

@@ -1,0 +1,13 @@
+{
+    "questions": [
+        {
+            "id": "q2",
+            "text": "What is your current body weight (kg)?",
+            "type": "number",
+            "required": true,
+            "config": {
+                "placeholder": "e.g., 75.5"
+            }
+        }
+    ]
+}

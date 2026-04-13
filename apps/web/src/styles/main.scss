@@ -1,0 +1,34 @@
+@use './variables' as *;
+
+:root {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: dark;
+    color: $text-primary;
+    background-color: $bg-dark;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: $bg-dark;
+    background-image: radial-gradient(circle at 10% 20%, rgba($primary-cyan, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba($primary-cyan, 0.05) 0%, transparent 40%);
+}
+
+#root {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

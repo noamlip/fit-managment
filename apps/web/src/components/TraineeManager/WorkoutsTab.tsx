@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AssignmentControls } from './AssignmentControls';
-import type { Trainee, WorkoutType, FeedbackAnswers, FeedbackAnswerValue, WorkoutSessionLog } from '../../types';
+import type { Trainee, WorkoutType, FeedbackAnswers, FeedbackAnswerValue } from '../../types';
 import { type IDayInfo, ScheduleCalendar } from './ScheduleCalendar';
 import { useWorkoutFeedbackConfig } from '../../hooks/useWorkoutFeedbackConfig';
 import {
@@ -27,75 +27,6 @@ function toSerializableFeedback(raw?: Record<string, FeedbackAnswerValue>): Feed
         }
     }
     return Object.keys(out).length ? out : undefined;
-}
-
-function formatDuration(sec: number | undefined): string {
-    if (sec == null || sec < 0) return '—';
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}m ${s}s`;
-}
-
-function SessionLogReadonly({ log, dateLabel }: { log: WorkoutSessionLog; dateLabel: string }) {
-    const complete = Boolean(log.endedAt);
-    return (
-        <div className="coach-session-log">
-            <h4>
-                Guided session — {dateLabel}
-                {!complete && <span className="session-in-progress"> In progress</span>}
-            </h4>
-            {complete && (
-                <p className="session-meta">
-                    Duration {formatDuration(log.totalElapsedSeconds)} · Started{' '}
-                    {new Date(log.startedAt).toLocaleString()} · Ended {new Date(log.endedAt!).toLocaleString()}
-                </p>
-            )}
-            {!complete && (
-                <p className="session-meta">Started {new Date(log.startedAt).toLocaleString()} (draft)</p>
-            )}
-            {log.restExtensions && log.restExtensions.length > 0 && (
-                <div className="session-rest-extensions">
-                    <strong>Extra rest</strong>
-                    <ul>
-                        {log.restExtensions.map((ev, i) => (
-                            <li key={i}>
-                                +{ev.addedSeconds}s at {formatDuration(ev.atElapsedSeconds)} elapsed
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-            <div className="session-exercises">
-                {log.exercises.map((ex) => (
-                    <div key={ex.exerciseId} className="session-ex-block">
-                        <div className="session-ex-name">
-                            {ex.name} <span className="muted">({ex.sets.length}/{ex.plannedSets} sets logged)</span>
-                        </div>
-                        {ex.sets.length > 0 && (
-                            <table className="session-sets-table">
-                                <thead>
-                                    <tr>
-                                        <th>Set</th>
-                                        <th>Weight (kg)</th>
-                                        <th>Reps</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {ex.sets.map((s) => (
-                                        <tr key={s.setIndex}>
-                                            <td>{s.setIndex}</td>
-                                            <td>{s.weightKg != null ? s.weightKg : '—'}</td>
-                                            <td>{s.repsCompleted ?? '—'}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
 }
 
 function scheduleEntryHasFeedback(feedback?: Record<string, FeedbackAnswerValue>): boolean {
@@ -198,10 +129,8 @@ export const WorkoutsTab: React.FC<IWorkoutsTabProps> = ({
         return 'Logged';
     };
 
-    const selectedDayLog =
-        selectedDate && trainee.schedule?.[selectedDate]?.sessionLog
-            ? trainee.schedule[selectedDate]!.sessionLog!
-            : null;
+    const selectedDay = selectedDate ? trainee.schedule?.[selectedDate] : null;
+    const sessionLog = selectedDay?.sessionLog;
 
     return (
         <div className="workouts-tab-coach">
@@ -258,12 +187,55 @@ export const WorkoutsTab: React.FC<IWorkoutsTabProps> = ({
                 )}
             </div>
 
+            {selectedDate && sessionLog?.endedAt && (
+                <div className="session-log-coach">
+                    <h4>Session log — {selectedDate}</h4>
+                    <p className="session-meta">
+                        Duration{' '}
+                        {sessionLog.totalElapsedSeconds != null
+                            ? `${Math.floor(sessionLog.totalElapsedSeconds / 60)}m ${sessionLog.totalElapsedSeconds % 60}s`
+                            : '—'}
+                        {sessionLog.restExtensions && sessionLog.restExtensions.length > 0 && (
+                            <>
+                                {' · '}
+                                Extra rest:{' '}
+                                {sessionLog.restExtensions.reduce((a, e) => a + e.addedSeconds, 0)}s total
+                            </>
+                        )}
+                    </p>
+                    <ul className="session-ex-list">
+                        {sessionLog.exercises.map((ex) => (
+                            <li key={ex.exerciseId}>
+                                <strong>{ex.name}</strong>
+                                <ul>
+                                    {ex.sets.map((s) => (
+                                        <li key={s.setIndex}>
+                                            Set {s.setIndex}
+                                            {s.weightKg != null ? ` · ${s.weightKg} kg` : ''}
+                                            {s.repsCompleted ? ` · ${s.repsCompleted} reps` : ''}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                    {sessionLog.restExtensions && sessionLog.restExtensions.length > 0 && (
+                        <div className="session-rest-ext">
+                            <span className="sub">Rest extensions</span>
+                            <ul>
+                                {sessionLog.restExtensions.map((r, i) => (
+                                    <li key={i}>
+                                        +{r.addedSeconds}s at {r.atElapsedSeconds}s elapsed
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            )}
+
             <AssignmentControls selectedDate={selectedDate} onAssign={onAssign} />
             <ScheduleCalendar weekDays={weekDays} onDayClick={onDateSelect} />
-
-            {selectedDate && selectedDayLog && (
-                <SessionLogReadonly log={selectedDayLog} dateLabel={selectedDate} />
-            )}
         </div>
     );
 };

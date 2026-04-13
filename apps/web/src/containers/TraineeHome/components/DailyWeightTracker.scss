@@ -1,0 +1,44 @@
+@use '../../../styles/variables' as *;
+
+.daily-weight-tracker {
+    @include glassmorphism;
+    padding: 1.25rem;
+    border-radius: 16px;
+    h3 {
+        margin-top: 0;
+        color: $primary-cyan;
+    }
+    .weight-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        input {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+        }
+        button {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid $primary-cyan;
+            background: rgba($primary-cyan, 0.15);
+            color: $primary-cyan;
+            cursor: pointer;
+        }
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid $border-color;
+            font-size: 0.9rem;
+        }
+    }
+}

@@ -1,0 +1,71 @@
+@use '../../styles/variables' as *;
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 800;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.manager-modal {
+    @include glassmorphism;
+    width: min(960px, 100%);
+    max-height: 92vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid rgba($primary-cyan, 0.2);
+}
+
+.manager-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid $border-color;
+    .close-btn {
+        background: transparent;
+        border: none;
+        color: $text-secondary;
+        cursor: pointer;
+        &:hover {
+            color: #fff;
+        }
+    }
+}
+
+.manager-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid $border-color;
+    button {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: $text-secondary;
+        cursor: pointer;
+        font-size: 0.85rem;
+        &.active {
+            background: rgba($primary-cyan, 0.12);
+            border-color: rgba($primary-cyan, 0.35);
+            color: $primary-cyan;
+        }
+    }
+}
+
+.manager-content {
+    padding: 1rem 1.25rem 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}

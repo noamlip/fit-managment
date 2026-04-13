@@ -1,0 +1,25 @@
+$primary-cyan: #00f2ff;
+$bg-dark: #0a0a0c;
+$text-primary: #ffffff;
+$text-secondary: #a0a0a0;
+$border-color: rgba(255, 255, 255, 0.1);
+$error-red: #ff4d4d;
+
+@mixin glassmorphism {
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin neon-border {
+    border-color: rgba($primary-cyan, 0.5);
+    box-shadow: 0 0 12px rgba($primary-cyan, 0.2);
+}

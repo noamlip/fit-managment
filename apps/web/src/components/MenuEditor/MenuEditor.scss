@@ -1,0 +1,42 @@
+@use '../../styles/variables' as *;
+
+.menu-editor {
+    @include glassmorphism;
+    padding: 1.25rem;
+    border-radius: 12px;
+    h3 {
+        color: $primary-cyan;
+        margin-top: 0;
+    }
+    .search-bar {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 1px solid $border-color;
+        background: rgba(0, 0, 0, 0.25);
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+    .food-item-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 1px solid $border-color;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        &:hover {
+            border-color: rgba($primary-cyan, 0.4);
+        }
+        button {
+            background: rgba($primary-cyan, 0.2);
+            border: 1px solid $primary-cyan;
+            color: $primary-cyan;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,99 @@
+@use '../../styles/variables' as *;
+
+.trainer-selection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+
+    h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        color: $primary-cyan;
+    }
+
+    .login-card {
+        @include glassmorphism;
+        padding: 3rem;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 420px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba($primary-cyan, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .role-row {
+            display: flex;
+            gap: 1rem;
+            button {
+                flex: 1;
+                padding: 0.75rem;
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.05);
+                color: $text-secondary;
+                cursor: pointer;
+                &.active {
+                    border-color: $primary-cyan;
+                    color: $primary-cyan;
+                }
+            }
+        }
+
+        .submit-login {
+            background: rgba($primary-cyan, 0.15);
+            border: 1px solid $primary-cyan;
+            color: $primary-cyan;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            &:hover {
+                background: $primary-cyan;
+                color: $bg-dark;
+            }
+        }
+
+        .recent-trainers {
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba($primary-cyan, 0.2);
+            h3 {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                color: $text-secondary;
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+            .trainer-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+            .trainer-chip {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid $border-color;
+                color: #fff;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                cursor: pointer;
+                &:hover {
+                    border-color: $primary-cyan;
+                    color: $primary-cyan;
+                }
+            }
+        }
+    }
+}

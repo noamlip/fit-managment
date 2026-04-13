@@ -1,0 +1,64 @@
+@use '../../styles/variables' as *;
+
+.trainee-workout-panel {
+    color: $text-primary;
+    .panel-header .welcome h1 {
+        color: $primary-cyan;
+    }
+    .todays-workout-card {
+        @include glassmorphism;
+        padding: 1.5rem;
+        border-radius: 16px;
+        max-width: 560px;
+    }
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        h3 {
+            margin: 0;
+        }
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba($primary-cyan, 0.15);
+            color: $primary-cyan;
+        }
+    }
+    .workout-preview {
+        margin-bottom: 1.25rem;
+    }
+    .exercise-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid $border-color;
+        font-size: 0.95rem;
+        .sets {
+            color: $text-secondary;
+            font-size: 0.85rem;
+        }
+    }
+    .start-btn {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid $primary-cyan;
+        background: rgba($primary-cyan, 0.15);
+        color: $primary-cyan;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        &.completed {
+            border-color: #00c49f;
+            color: #00c49f;
+            background: rgba(0, 196, 159, 0.1);
+        }
+    }
+}
