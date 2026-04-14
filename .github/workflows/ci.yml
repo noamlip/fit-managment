@@ -17,15 +17,9 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-<<<<<<< HEAD
-          cache-dependency-path: package.json
-      - run: npm install
-      - run: npx nx run web:build
-=======
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: VITE_API_BASE_URL= npx nx run web:build
->>>>>>> b74bd2d (v3)
       - run: npx nx run web:lint
       - run: npx nx run api:typecheck
       - run: npx nx run api:build
