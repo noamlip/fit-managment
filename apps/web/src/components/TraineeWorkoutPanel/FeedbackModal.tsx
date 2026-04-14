@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import type { FeedbackAnswers, FeedbackQuestion } from '../../types';
 import './FeedbackModal.scss';
 
@@ -17,6 +18,7 @@ export const FeedbackModal: React.FC<Props> = ({
     onSubmit,
     onCancel,
 }) => {
+    useEscapeToClose(onCancel, true);
     const [answers, setAnswers] = useState<FeedbackAnswers>({ ...initialAnswers });
 
     useEffect(() => {

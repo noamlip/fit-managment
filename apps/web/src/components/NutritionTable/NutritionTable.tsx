@@ -28,7 +28,16 @@ function sumMacros(items: FoodItem[]) {
     );
 }
 
-export const NutritionTable: FC = () => {
+interface NutritionTableProps {
+    /** Hide the panel H2 when a parent route already shows a section title (e.g. coach chrome). */
+    hidePanelTitle?: boolean;
+    /** Coach flows: route chrome, menu overlay — tighter layout + scroll affordances on small screens. */
+    variant?: 'default' | 'coach';
+}
+
+export const NutritionTable: FC<NutritionTableProps> = ({ hidePanelTitle = false, variant = 'default' }) => {
+    const coachPanel = variant === 'coach' ? ' nutrition-panel--coach' : '';
+    const coachWrap = variant === 'coach' ? ' nutrition-table-wrap--coach' : '';
     const { foodDatabase, currentPlan } = useConfig();
     const { commitPlan } = useNutritionPlanCommit();
     const [searchByMeal, setSearchByMeal] = useState<Record<string, string>>({});
@@ -126,15 +135,15 @@ export const NutritionTable: FC = () => {
 
     if (!currentPlan) {
         return (
-            <div className="nutrition-table-wrap">
+            <div className={`nutrition-table-wrap${coachWrap}`}>
                 <p style={{ color: '#888' }}>Loading nutrition plan…</p>
             </div>
         );
     }
 
     return (
-        <div className="nutrition-panel">
-            <h2 className="nutrition-panel-title">Daily nutrition</h2>
+        <div className={`nutrition-panel${coachPanel}`}>
+            {!hidePanelTitle && <h2 className="nutrition-panel-title">Daily nutrition</h2>}
 
             {meals.map((meal) => (
                 <MealBlock
@@ -217,51 +226,53 @@ function MealBlock({
             {meal.items.length === 0 ? (
                 <p className="nutrition-meal-empty">No foods in this meal yet.</p>
             ) : (
-                <table className="nutrition-meal-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th>kcal</th>
-                            <th>P</th>
-                            <th>C</th>
-                            <th>F</th>
-                            <th aria-label="Remove" />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {meal.items.map((f) => (
-                            <tr key={f.id}>
-                                <td>{f.item}</td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        className="nutrition-qty-input"
-                                        value={f.quantity}
-                                        onChange={(e) =>
-                                            onUpdateFood(f.id, 'quantity', e.target.value)
-                                        }
-                                        aria-label="Quantity"
-                                    />
-                                </td>
-                                <td>{f.calories}</td>
-                                <td>{f.protein}</td>
-                                <td>{f.carbs}</td>
-                                <td>{f.fat}</td>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className="nutrition-remove-row"
-                                        onClick={() => onRemoveFood(f.id)}
-                                        aria-label="Remove food"
-                                    >
-                                        ×
-                                    </button>
-                                </td>
+                <div className="nutrition-meal-table-scroll">
+                    <table className="nutrition-meal-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>kcal</th>
+                                <th>P</th>
+                                <th>C</th>
+                                <th>F</th>
+                                <th aria-label="Remove" />
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {meal.items.map((f) => (
+                                <tr key={f.id}>
+                                    <td>{f.item}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            className="nutrition-qty-input"
+                                            value={f.quantity}
+                                            onChange={(e) =>
+                                                onUpdateFood(f.id, 'quantity', e.target.value)
+                                            }
+                                            aria-label="Quantity"
+                                        />
+                                    </td>
+                                    <td>{f.calories}</td>
+                                    <td>{f.protein}</td>
+                                    <td>{f.carbs}</td>
+                                    <td>{f.fat}</td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            className="nutrition-remove-row"
+                                            onClick={() => onRemoveFood(f.id)}
+                                            aria-label="Remove food"
+                                        >
+                                            ×
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
 
             <div className="nutrition-food-search">

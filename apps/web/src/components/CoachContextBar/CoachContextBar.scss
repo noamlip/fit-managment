@@ -1,0 +1,80 @@
+@use '../../styles/variables' as *;
+
+.coach-context-bar {
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-bottom: 1rem;
+    margin: -0.5rem 0 0.5rem;
+}
+
+.coach-context-bar-inner {
+    @include glassmorphism;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 1rem;
+    padding: 0.55rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba($primary-cyan, 0.2);
+}
+
+.coach-context-bar-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.coach-context-bar-select {
+    flex: 1;
+    min-width: 10rem;
+    max-width: 22rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    background: rgba(0, 0, 0, 0.35);
+    color: $text-primary;
+    font-size: 0.95rem;
+}
+
+.coach-context-bar-coach {
+    font-size: 0.8rem;
+    color: $text-secondary;
+    margin-left: auto;
+    text-align: right;
+    min-width: 0;
+
+    strong {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 640px) {
+    .coach-context-bar {
+        margin: -0.25rem 0 0.35rem;
+        padding-bottom: 0.65rem;
+    }
+
+    .coach-context-bar-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 0.65rem 0.85rem;
+    }
+
+    .coach-context-bar-select {
+        max-width: none;
+        width: 100%;
+    }
+
+    .coach-context-bar-coach {
+        margin-left: 0;
+        text-align: left;
+        padding-top: 0.15rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+}

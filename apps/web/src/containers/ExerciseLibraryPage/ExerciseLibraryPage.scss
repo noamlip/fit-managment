@@ -1,0 +1,224 @@
+@use '../../styles/variables' as *;
+
+.exercise-library-page {
+    max-width: 720px;
+    width: 100%;
+    color: $text-primary;
+
+    .exercise-library-lead {
+        margin: 0 0 1.25rem;
+        color: $text-secondary;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .exercise-library-label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: $text-secondary;
+    }
+
+    .exercise-library-add-part {
+        margin-bottom: 1.5rem;
+        @include glassmorphism;
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .exercise-library-add-row {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 0.5rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba($primary-cyan, 0.45);
+            background: rgba($primary-cyan, 0.12);
+            color: $primary-cyan;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+
+    .exercise-library-empty {
+        color: $text-secondary;
+        font-size: 0.9rem;
+    }
+
+    .exercise-library-part {
+        @include glassmorphism;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .exercise-library-part-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .exercise-library-part-title-block {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .exercise-library-part-title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+    }
+
+    .exercise-library-part-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: $text-primary;
+    }
+
+    .exercise-library-rename-part {
+        padding: 0.3rem 0.55rem;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid $border-color;
+        background: rgba(255, 255, 255, 0.06);
+        color: $text-secondary;
+        cursor: pointer;
+        &:hover {
+            border-color: rgba($primary-cyan, 0.4);
+            color: $primary-cyan;
+        }
+    }
+
+    .exercise-library-remove-part {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid $border-color;
+        background: transparent;
+        color: $text-secondary;
+        cursor: pointer;
+        &:hover {
+            border-color: rgba(#ff4d4d, 0.45);
+            color: #ff8888;
+        }
+    }
+
+    .exercise-library-list {
+        list-style: none;
+        margin: 0 0 0.75rem;
+        padding: 0;
+
+        li {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.4rem;
+
+            input {
+                flex: 1;
+                min-width: 0;
+                padding: 0.4rem 0.55rem;
+                border-radius: 8px;
+                border: 1px solid $border-color;
+                background: rgba(255, 255, 255, 0.06);
+                color: #fff;
+                font-size: 0.88rem;
+            }
+
+            button {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.75rem;
+                border-radius: 6px;
+                border: 1px solid $border-color;
+                background: rgba(255, 255, 255, 0.05);
+                color: $text-secondary;
+                cursor: pointer;
+                white-space: nowrap;
+                &:hover {
+                    color: #ff8888;
+                }
+            }
+        }
+    }
+
+    .exercise-library-add-ex {
+        display: flex;
+        gap: 0.5rem;
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        button {
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid rgba($primary-cyan, 0.35);
+            background: rgba($primary-cyan, 0.08);
+            color: $primary-cyan;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+    }
+
+    .exercise-library-actions {
+        margin-top: 1.25rem;
+    }
+
+    .exercise-library-save {
+        padding: 0.65rem 1.4rem;
+        border-radius: 10px;
+        border: 1px solid $primary-cyan;
+        background: rgba($primary-cyan, 0.2);
+        color: $primary-cyan;
+        font-weight: 700;
+        cursor: pointer;
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@media (max-width: 560px) {
+    .exercise-library-page {
+        .exercise-library-add-row {
+            flex-direction: column;
+        }
+
+        .exercise-library-part-head {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .exercise-library-add-ex {
+            flex-direction: column;
+        }
+    }
+}

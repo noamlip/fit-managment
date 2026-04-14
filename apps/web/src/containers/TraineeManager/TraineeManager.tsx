@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useToast } from '../../context/ToastContext';
 import { useWorkout } from '../../context/WorkoutContext';
 import { useTrainee } from '../../context/TraineeContext';
@@ -8,11 +9,12 @@ import { WeeklyCheckinsTab } from '../../components/TraineeManager/WeeklyCheckin
 import { WorkoutBuilder } from '../../components/ContentBuilder/WorkoutBuilder';
 import { WorkoutsTab } from '../../components/TraineeManager/WorkoutsTab';
 import { NutritionTab } from '../../components/TraineeManager/NutritionTab';
-import { X, Dumbbell, Utensils, Activity, ClipboardCheck, Camera } from 'lucide-react';
+import { RoutineTemplatesEditor } from '../TraineeHome/components/RoutineTemplatesEditor';
+import { X, Dumbbell, Utensils, Activity, ClipboardCheck, Camera, LayoutTemplate } from 'lucide-react';
 import type { Exercise, Trainee, WorkoutType } from '../../types';
 import './TraineeManager.scss';
 
-type ManagerTab = 'progress' | 'workouts' | 'nutrition' | 'checkins' | 'photos';
+type ManagerTab = 'progress' | 'workouts' | 'templates' | 'nutrition' | 'checkins' | 'photos';
 
 interface ITraineeManagerProps {
     trainee: Trainee;
@@ -34,7 +36,10 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [showBuilder, setShowBuilder] = useState(false);
     const [draftType, setDraftType] = useState<WorkoutType | null>(null);
+    const [templatesEscapeLock, setTemplatesEscapeLock] = useState(false);
     const prevTabRef = useRef<ManagerTab>(activeTab);
+
+    useEscapeToClose(onClose, !showBuilder && !templatesEscapeLock);
 
     useEffect(() => {
         const entered = prevTabRef.current !== 'workouts' && activeTab === 'workouts';
@@ -147,6 +152,13 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({
                     </button>
                     <button
                         type="button"
+                        className={activeTab === 'templates' ? 'active' : ''}
+                        onClick={() => setActiveTab('templates')}
+                    >
+                        <LayoutTemplate size={18} /> Templates
+                    </button>
+                    <button
+                        type="button"
                         className={activeTab === 'nutrition' ? 'active' : ''}
                         onClick={() => setActiveTab('nutrition')}
                     >
@@ -176,6 +188,13 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({
                             onDateSelect={setSelectedDate}
                             onAssign={assignWorkout}
                             onMarkFeedbackSeen={markFeedbackSeen}
+                        />
+                    )}
+                    {activeTab === 'templates' && (
+                        <RoutineTemplatesEditor
+                            trainee={trainee}
+                            updateTrainee={onUpdate}
+                            onEscapeLockChange={setTemplatesEscapeLock}
                         />
                     )}
                     {activeTab === 'nutrition' && (

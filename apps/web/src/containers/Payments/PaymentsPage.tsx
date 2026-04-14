@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useTrainee } from '../../context/TraineeContext';
 import type { PaymentMethodType, Trainee, TraineePayment } from '../../types';
 import './PaymentsPage.scss';
@@ -33,6 +34,8 @@ export const PaymentsPage: React.FC = () => {
         setEditingId(null);
         setDraft(null);
     };
+
+    useEscapeToClose(cancel, editingId !== null);
 
     return (
         <div className="payments-page">

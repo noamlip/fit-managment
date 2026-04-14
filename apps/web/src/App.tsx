@@ -27,6 +27,19 @@ const Settings = lazy(() =>
 const PaymentsPage = lazy(() =>
     import('./containers/Payments/PaymentsPage.tsx').then((m) => ({ default: m.PaymentsPage }))
 );
+const CoachNeedsTraineePlaceholder = lazy(() =>
+    import('./components/CoachNeedsTraineePlaceholder/CoachNeedsTraineePlaceholder.tsx').then((m) => ({
+        default: m.CoachNeedsTraineePlaceholder,
+    }))
+);
+const CoachPageChrome = lazy(() =>
+    import('./components/CoachPageChrome/CoachPageChrome.tsx').then((m) => ({ default: m.CoachPageChrome }))
+);
+const ExerciseLibraryPage = lazy(() =>
+    import('./containers/ExerciseLibraryPage/ExerciseLibraryPage.tsx').then((m) => ({
+        default: m.ExerciseLibraryPage,
+    }))
+);
 
 function RouteFallback() {
     return (
@@ -49,18 +62,12 @@ function RouteFallback() {
 }
 
 const Content = () => {
-    const { trainerName, userRole } = useConfig();
+    const { trainerName, userRole, selectedTrainee } = useConfig();
     const [activePage, setActivePage] = useState<AppPage>('home');
 
     useEffect(() => {
         setActivePage('home');
     }, [userRole]);
-
-    useEffect(() => {
-        if (userRole === 'coach' && (activePage === 'workouts' || activePage === 'nutrition')) {
-            setActivePage('home');
-        }
-    }, [userRole, activePage]);
 
     if (!trainerName) {
         return <TrainerSelection />;
@@ -70,13 +77,51 @@ const Content = () => {
         <Layout activePage={activePage} onNavigate={setActivePage}>
             <Suspense fallback={<RouteFallback />}>
                 {activePage === 'home' &&
-                    (userRole === 'coach' ? <TraineeDashboard /> : <TraineeHome />)}
+                    (userRole === 'coach' ? (
+                        <TraineeDashboard onNavigate={setActivePage} />
+                    ) : (
+                        <TraineeHome onNavigate={setActivePage} />
+                    ))}
 
                 {activePage === 'payments' && userRole === 'coach' && <PaymentsPage />}
 
-                {activePage === 'workouts' && userRole !== 'coach' && <TraineeWorkoutPanel />}
+                {activePage === 'workouts' &&
+                    userRole === 'coach' &&
+                    !selectedTrainee && (
+                        <CoachNeedsTraineePlaceholder page="workouts" onNavigate={setActivePage} />
+                    )}
 
-                {activePage === 'nutrition' && userRole !== 'coach' && <NutritionTable />}
+                {activePage === 'workouts' && (userRole !== 'coach' || selectedTrainee) && (
+                    userRole === 'coach' ? (
+                        <CoachPageChrome sectionTitle="Workouts">
+                            <TraineeWorkoutPanel />
+                        </CoachPageChrome>
+                    ) : (
+                        <TraineeWorkoutPanel />
+                    )
+                )}
+
+                {activePage === 'nutrition' &&
+                    userRole === 'coach' &&
+                    !selectedTrainee && (
+                        <CoachNeedsTraineePlaceholder page="nutrition" onNavigate={setActivePage} />
+                    )}
+
+                {activePage === 'nutrition' && (userRole !== 'coach' || selectedTrainee) && (
+                    userRole === 'coach' ? (
+                        <CoachPageChrome sectionTitle="Nutrition">
+                            <NutritionTable hidePanelTitle variant="coach" />
+                        </CoachPageChrome>
+                    ) : (
+                        <NutritionTable />
+                    )
+                )}
+
+                {activePage === 'library' && userRole === 'coach' && (
+                    <CoachPageChrome sectionTitle="Exercise library">
+                        <ExerciseLibraryPage />
+                    </CoachPageChrome>
+                )}
 
                 {activePage === 'settings' && <Settings />}
             </Suspense>

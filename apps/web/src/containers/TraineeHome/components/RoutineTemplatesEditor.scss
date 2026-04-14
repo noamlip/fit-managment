@@ -1,0 +1,120 @@
+@use '../../../styles/variables' as *;
+
+.routine-templates-editor {
+    .rte-hint {
+        color: $text-secondary;
+        font-size: 0.9rem;
+        line-height: 1.45;
+        margin: 0 0 1rem;
+    }
+
+    .rte-type-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        button {
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(0, 0, 0, 0.2);
+            color: $text-secondary;
+            cursor: pointer;
+            text-transform: capitalize;
+            font-weight: 600;
+
+            &.active {
+                border-color: $primary-cyan;
+                color: $primary-cyan;
+                background: rgba($primary-cyan, 0.12);
+            }
+        }
+    }
+
+    .rte-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+    }
+
+    .rte-btn {
+        padding: 0.5rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        color: $text-primary;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+
+        &.primary {
+            border-color: rgba($primary-cyan, 0.45);
+            background: rgba($primary-cyan, 0.15);
+            color: $primary-cyan;
+        }
+    }
+
+    .rte-copy-wrap {
+        position: relative;
+    }
+
+    .rte-copy-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.35rem;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid $border-color;
+        background: rgba(20, 20, 28, 0.98);
+        min-width: 8rem;
+
+        button {
+            text-align: left;
+            padding: 0.4rem 0.6rem;
+            border: none;
+            background: transparent;
+            color: $text-primary;
+            cursor: pointer;
+            text-transform: capitalize;
+            border-radius: 6px;
+
+            &:hover {
+                background: rgba($primary-cyan, 0.1);
+                color: $primary-cyan;
+            }
+        }
+    }
+
+    .rte-preview {
+        h4 {
+            margin: 0 0 0.5rem;
+            color: $primary-cyan;
+            font-size: 0.95rem;
+        }
+
+        .rte-empty {
+            color: #888;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 1.2rem;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 0.9rem;
+
+            li {
+                margin-bottom: 0.35rem;
+            }
+        }
+    }
+}

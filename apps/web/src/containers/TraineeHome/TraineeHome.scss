@@ -5,4 +5,67 @@
     h1 {
         color: $primary-cyan;
     }
+
+    .trainee-home-hub-entry {
+        width: 100%;
+        margin: 1.25rem 0 1.75rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .trainee-home-hub-entry-inner {
+        @include glassmorphism;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.15rem;
+        border-radius: 14px;
+        border: 1px solid rgba($primary-cyan, 0.25);
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:hover {
+            border-color: rgba($primary-cyan, 0.5);
+            box-shadow: 0 0 20px rgba($primary-cyan, 0.12);
+        }
+    }
+
+    .trainee-home-hub-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background: rgba($primary-cyan, 0.2);
+        color: $primary-cyan;
+        font-weight: 800;
+        font-size: 1.2rem;
+        @include flex-center;
+        flex-shrink: 0;
+    }
+
+    .trainee-home-hub-copy {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .trainee-home-hub-title {
+        font-weight: 700;
+        color: $text-primary;
+        font-size: 1.05rem;
+    }
+
+    .trainee-home-hub-sub {
+        font-size: 0.85rem;
+        color: $text-secondary;
+    }
+
+    .trainee-home-hub-chevron {
+        flex-shrink: 0;
+        color: $primary-cyan;
+        opacity: 0.85;
+    }
 }

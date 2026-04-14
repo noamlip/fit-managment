@@ -68,28 +68,6 @@ export const WorkoutsTab: React.FC<IWorkoutsTabProps> = ({
         });
     }, [trainee.schedule, selectedDate]);
 
-    const lastSevenDays = useMemo(() => {
-        return Array.from({ length: 7 }, (_, i) => {
-            const d = new Date();
-            d.setHours(0, 0, 0, 0);
-            d.setDate(d.getDate() - (6 - i));
-            const dateStr = d.toISOString().split('T')[0];
-            const scheduled = trainee.schedule?.[dateStr];
-            const isRest = !scheduled || scheduled.workoutType === 'rest';
-            const completed = scheduled?.status === 'completed';
-            let tone: 'neutral' | 'done' | 'missed' = 'neutral';
-            if (!isRest) {
-                tone = completed ? 'done' : 'missed';
-            }
-            return {
-                dateStr,
-                label: d.toLocaleDateString('en-US', { weekday: 'short' }),
-                dayNum: d.getDate(),
-                tone,
-            };
-        });
-    }, [trainee.schedule]);
-
     const lastSeenDay = trainee.coachLastSeenWorkoutFeedbackAt?.split('T')[0] ?? '';
 
     const newFeedbackCount = useMemo(() => {
@@ -129,35 +107,8 @@ export const WorkoutsTab: React.FC<IWorkoutsTabProps> = ({
         return 'Logged';
     };
 
-    const selectedDay = selectedDate ? trainee.schedule?.[selectedDate] : null;
-    const sessionLog = selectedDay?.sessionLog;
-
     return (
         <div className="workouts-tab-coach">
-            <div className="retro-strip-wrap">
-                <h4>Last 7 days (completion)</h4>
-                <div className="retro-strip">
-                    {lastSevenDays.map((d) => (
-                        <div key={d.dateStr} className={`retro-day ${d.tone}`}>
-                            <div className="dot" title={d.dateStr} />
-                            <span className="lbl">{d.label}</span>
-                            <span className="num">{d.dayNum}</span>
-                        </div>
-                    ))}
-                </div>
-                <div className="retro-legend">
-                    <span>
-                        <i className="lg g" /> Completed workout
-                    </span>
-                    <span>
-                        <i className="lg r" /> Scheduled, not completed
-                    </span>
-                    <span>
-                        <i className="lg n" /> Rest or no entry
-                    </span>
-                </div>
-            </div>
-
             <div className="feedback-highlights">
                 <div className="fb-head">
                     <h4>Recent session feedback</h4>
@@ -186,53 +137,6 @@ export const WorkoutsTab: React.FC<IWorkoutsTabProps> = ({
                     ))
                 )}
             </div>
-
-            {selectedDate && sessionLog?.endedAt && (
-                <div className="session-log-coach">
-                    <h4>Session log — {selectedDate}</h4>
-                    <p className="session-meta">
-                        Duration{' '}
-                        {sessionLog.totalElapsedSeconds != null
-                            ? `${Math.floor(sessionLog.totalElapsedSeconds / 60)}m ${sessionLog.totalElapsedSeconds % 60}s`
-                            : '—'}
-                        {sessionLog.restExtensions && sessionLog.restExtensions.length > 0 && (
-                            <>
-                                {' · '}
-                                Extra rest:{' '}
-                                {sessionLog.restExtensions.reduce((a, e) => a + e.addedSeconds, 0)}s total
-                            </>
-                        )}
-                    </p>
-                    <ul className="session-ex-list">
-                        {sessionLog.exercises.map((ex) => (
-                            <li key={ex.exerciseId}>
-                                <strong>{ex.name}</strong>
-                                <ul>
-                                    {ex.sets.map((s) => (
-                                        <li key={s.setIndex}>
-                                            Set {s.setIndex}
-                                            {s.weightKg != null ? ` · ${s.weightKg} kg` : ''}
-                                            {s.repsCompleted ? ` · ${s.repsCompleted} reps` : ''}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
-                    {sessionLog.restExtensions && sessionLog.restExtensions.length > 0 && (
-                        <div className="session-rest-ext">
-                            <span className="sub">Rest extensions</span>
-                            <ul>
-                                {sessionLog.restExtensions.map((r, i) => (
-                                    <li key={i}>
-                                        +{r.addedSeconds}s at {r.atElapsedSeconds}s elapsed
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            )}
 
             <AssignmentControls selectedDate={selectedDate} onAssign={onAssign} />
             <ScheduleCalendar weekDays={weekDays} onDayClick={onDateSelect} />

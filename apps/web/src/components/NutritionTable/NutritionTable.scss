@@ -4,6 +4,20 @@
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+
+    &--coach {
+        gap: 1rem;
+        padding: 0.25rem 0 0.5rem;
+
+        .nutrition-meal {
+            border-color: rgba($primary-cyan, 0.18);
+            box-shadow: 0 0 0 1px rgba($primary-cyan, 0.06);
+        }
+
+        .nutrition-day-total {
+            border-color: rgba($primary-cyan, 0.2);
+        }
+    }
 }
 
 .nutrition-panel-title {
@@ -57,18 +71,30 @@
     font-size: 0.9rem;
 }
 
+.nutrition-meal-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.15);
+}
+
 .nutrition-meal-table {
     width: 100%;
+    min-width: 32rem;
     font-size: 0.9rem;
-    margin-bottom: 1rem;
+    border-collapse: collapse;
     th {
         color: $text-secondary;
         font-size: 0.75rem;
         text-transform: uppercase;
         text-align: left;
+        padding: 0.5rem 0.35rem 0.5rem 0.35rem;
+        white-space: nowrap;
     }
     td {
-        padding: 0.5rem 0.35rem 0.5rem 0;
+        padding: 0.5rem 0.35rem 0.5rem 0.35rem;
         border-bottom: 1px solid $border-color;
         vertical-align: middle;
     }
@@ -206,4 +232,46 @@
     @include glassmorphism;
     padding: 1.25rem;
     border-radius: 12px;
+
+    &--coach {
+        border-color: rgba($primary-cyan, 0.2);
+    }
+}
+
+@media (max-width: 640px) {
+    .nutrition-panel {
+        gap: 1rem;
+    }
+
+    .nutrition-panel--coach .nutrition-meal {
+        padding: 1rem;
+    }
+
+    .nutrition-meal-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .nutrition-meal-title-input {
+        width: 100%;
+    }
+
+    .nutrition-remove-meal {
+        align-self: flex-end;
+    }
+
+    .nutrition-food-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .nutrition-add-food-btn {
+        align-self: flex-end;
+    }
+
+    .nutrition-day-total {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

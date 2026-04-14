@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import type {
     Exercise,
     LoggedExercise,
@@ -47,6 +48,7 @@ export const WorkoutSessionModal: React.FC<WorkoutSessionModalProps> = ({
     onFinish,
     onPersistDraft,
 }) => {
+    useEscapeToClose(onCancel, open);
     const [elapsedSec, setElapsedSec] = useState(0);
     const [sessionLog, setSessionLog] = useState<WorkoutSessionLog>(() => ({
         startedAt: new Date().toISOString(),

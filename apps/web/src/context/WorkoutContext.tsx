@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+    type ReactNode,
+} from 'react';
 import type { Exercise, ExerciseCatalog, WorkoutTemplate, WorkoutType } from '../types';
 
 interface WorkoutContextType {
@@ -7,6 +15,7 @@ interface WorkoutContextType {
     templates: WorkoutTemplate[];
     loading: boolean;
     error: Error | null;
+    reloadCatalog: () => Promise<void>;
 }
 
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
@@ -65,6 +74,13 @@ function defaultTemplates(catalog: ExerciseCatalog): WorkoutTemplate[] {
     ];
 }
 
+async function loadCatalogFromNetwork(bustCache: boolean): Promise<ExerciseCatalog> {
+    const url = bustCache ? `${EXERCISES_URL}?t=${Date.now()}` : EXERCISES_URL;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to load exercises');
+    return (await res.json()) as ExerciseCatalog;
+}
+
 export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [exerciseCatalog, setExerciseCatalog] = useState<ExerciseCatalog>({});
     const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -72,18 +88,21 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
+    const applyCatalog = useCallback((catalog: ExerciseCatalog) => {
+        setExerciseCatalog(catalog);
+        setExercises(catalogToExerciseLibrary(catalog));
+        setTemplates(defaultTemplates(catalog));
+    }, []);
+
     useEffect(() => {
         let cancelled = false;
         (async () => {
             try {
-                const res = await fetch(EXERCISES_URL);
-                if (!res.ok) throw new Error('Failed to load exercises');
-                const catalog = (await res.json()) as ExerciseCatalog;
+                setLoading(true);
+                setError(null);
+                const catalog = await loadCatalogFromNetwork(false);
                 if (cancelled) return;
-                setExerciseCatalog(catalog);
-                const lib = catalogToExerciseLibrary(catalog);
-                setExercises(lib);
-                setTemplates(defaultTemplates(catalog));
+                applyCatalog(catalog);
             } catch (e) {
                 if (!cancelled) setError(e instanceof Error ? e : new Error('Workout load error'));
             } finally {
@@ -93,11 +112,22 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [applyCatalog]);
+
+    const reloadCatalog = useCallback(async () => {
+        setError(null);
+        try {
+            const catalog = await loadCatalogFromNetwork(true);
+            applyCatalog(catalog);
+        } catch (e) {
+            setError(e instanceof Error ? e : new Error('Workout load error'));
+            throw e;
+        }
+    }, [applyCatalog]);
 
     const value = useMemo(
-        () => ({ exercises, exerciseCatalog, templates, loading, error }),
-        [exercises, exerciseCatalog, templates, loading, error]
+        () => ({ exercises, exerciseCatalog, templates, loading, error, reloadCatalog }),
+        [exercises, exerciseCatalog, templates, loading, error, reloadCatalog]
     );
 
     return <WorkoutContext.Provider value={value}>{children}</WorkoutContext.Provider>;

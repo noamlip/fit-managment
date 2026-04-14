@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { Trainee } from '../../types';
+import './NutritionTab.scss';
 
 interface INutritionTabProps {
     trainee: Trainee;
@@ -51,7 +52,10 @@ export const NutritionTab: React.FC<INutritionTabProps> = ({ trainee, onUpdate, 
 
     return (
         <div className="nutrition-assignment">
-            <h3>Nutrition Plan Targets</h3>
+            <h3>Nutrition plan targets</h3>
+            <p className="nutrition-assignment-lead">
+                Set daily macro targets for this trainee, then open the full day menu to add meals and foods.
+            </p>
             <div className="macros-overview">
                 <div className="macro-card">
                     <label>Daily calories (kcal)</label>

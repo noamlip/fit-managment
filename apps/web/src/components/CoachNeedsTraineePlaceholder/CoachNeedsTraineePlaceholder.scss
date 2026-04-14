@@ -1,0 +1,53 @@
+@use '../../styles/variables' as *;
+
+.coach-needs-trainee {
+    @include glassmorphism;
+    max-width: 32rem;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 14px;
+    text-align: center;
+
+    .coach-needs-trainee-title {
+        margin: 0 0 0.75rem;
+        color: $primary-cyan;
+        font-size: 1.35rem;
+    }
+
+    .coach-needs-trainee-text {
+        margin: 0 0 1.5rem;
+        color: $text-secondary;
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .coach-needs-trainee-btn {
+        padding: 0.65rem 1.25rem;
+        border-radius: 10px;
+        border: 1px solid $primary-cyan;
+        background: rgba($primary-cyan, 0.15);
+        color: $primary-cyan;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba($primary-cyan, 0.25);
+        }
+    }
+}
+
+@media (max-width: 520px) {
+    .coach-needs-trainee {
+        margin: 1rem 0;
+        padding: 1.25rem 1rem;
+        max-width: none;
+
+        .coach-needs-trainee-title {
+            font-size: 1.15rem;
+        }
+
+        .coach-needs-trainee-text {
+            font-size: 0.88rem;
+        }
+    }
+}

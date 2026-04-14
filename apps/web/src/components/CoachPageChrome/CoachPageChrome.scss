@@ -1,0 +1,25 @@
+@use '../../styles/variables' as *;
+
+.coach-page-chrome {
+    .coach-page-chrome-title {
+        margin: 0 0 1rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: $text-secondary;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+
+    .coach-page-chrome-body {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .coach-page-chrome {
+        .coach-page-chrome-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+    }
+}

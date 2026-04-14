@@ -1,0 +1,332 @@
+@use '../../styles/variables' as *;
+
+.coach-workout-history {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+
+    .session-log-coach {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-top: 1rem;
+
+        h4 {
+            margin: 0 0 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: $primary-cyan;
+        }
+
+        .session-meta {
+            margin: 0 0 0.75rem;
+            font-size: 0.85rem;
+            color: $text-secondary;
+        }
+
+        .session-ex-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            > li {
+                margin-bottom: 0.75rem;
+                font-size: 0.9rem;
+                ul {
+                    margin: 0.35rem 0 0 1rem;
+                    padding: 0;
+                    color: $text-secondary;
+                    font-size: 0.85rem;
+                }
+            }
+        }
+
+        .session-rest-ext {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: $text-secondary;
+            .sub {
+                display: block;
+                margin-bottom: 0.35rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+            ul {
+                margin: 0;
+                padding-left: 1.2rem;
+            }
+        }
+    }
+
+    .workout-history-title {
+        margin: 0 0 0.35rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: $text-secondary;
+    }
+
+    .workout-history-lead {
+        margin: 0 0 1rem;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        color: $text-secondary;
+    }
+
+    .workout-history-toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .wh-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+
+        button {
+            padding: 0.45rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: $text-secondary;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+            &:hover {
+                border-color: rgba($primary-cyan, 0.35);
+                color: #fff;
+            }
+
+            &.active {
+                border-color: rgba($primary-cyan, 0.55);
+                background: rgba($primary-cyan, 0.12);
+                color: $primary-cyan;
+            }
+        }
+    }
+
+    .wh-custom-dates {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 0.75rem 1rem;
+    }
+
+    .wh-date-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: $text-secondary;
+
+        input {
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(0, 0, 0, 0.28);
+            color: $text-primary;
+            font-size: 0.9rem;
+            min-width: 11rem;
+        }
+    }
+
+    .workout-history-error {
+        margin: 0 0 0.5rem;
+        font-size: 0.82rem;
+        color: #f87171;
+    }
+
+    .workout-history-range-label {
+        margin: 0 0 0.65rem;
+        font-size: 0.78rem;
+        color: $text-secondary;
+
+        strong {
+            color: rgba(255, 255, 255, 0.88);
+            font-weight: 600;
+        }
+    }
+
+    .workout-history-table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 0.75rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .workout-history-table {
+        width: 100%;
+        min-width: 28rem;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+
+        th {
+            text-align: left;
+            padding: 0.5rem 0.65rem;
+            color: $text-secondary;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.45rem 0.65rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            vertical-align: middle;
+            color: $text-primary;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+    }
+
+    .wh-row-select {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        text-align: left;
+        color: inherit;
+        font: inherit;
+
+        &:hover .wh-iso {
+            color: $primary-cyan;
+            text-decoration: underline;
+        }
+    }
+
+    .wh-dow {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        color: $text-secondary;
+        letter-spacing: 0.04em;
+    }
+
+    .wh-iso {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.92);
+    }
+
+    .wh-row--selected {
+        background: rgba($primary-cyan, 0.08);
+        outline: 1px solid rgba($primary-cyan, 0.25);
+        outline-offset: -1px;
+    }
+
+    tr.wh-row--done {
+        box-shadow: inset 3px 0 0 #4ade80;
+    }
+
+    tr.wh-row--missed {
+        box-shadow: inset 3px 0 0 #f87171;
+    }
+
+    tr.wh-row--neutral {
+        box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .wh-badge {
+        display: inline-block;
+        padding: 0.2rem 0.45rem;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .wh-status-done {
+        background: rgba(74, 222, 128, 0.18);
+        color: #86efac;
+    }
+
+    .wh-status-pending {
+        background: rgba(251, 191, 36, 0.12);
+        color: #fde68a;
+    }
+
+    .wh-status-skip {
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+    }
+
+    .wh-status-none {
+        background: rgba(255, 255, 255, 0.06);
+        color: $text-secondary;
+    }
+
+    .workout-history-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.25rem;
+        font-size: 0.72rem;
+        color: $text-secondary;
+
+        span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    }
+
+    .wh-lg {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        flex-shrink: 0;
+
+        &--done {
+            background: #4ade80;
+        }
+        &--missed {
+            background: #f87171;
+        }
+        &--neutral {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    @media (max-width: 560px) {
+        .wh-presets button {
+            flex: 1 1 auto;
+            min-width: calc(50% - 0.25rem);
+            text-align: center;
+        }
+
+        .wh-custom-dates {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .wh-date-field input {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .workout-history-table {
+            font-size: 0.78rem;
+
+            th,
+            td {
+                padding: 0.4rem 0.45rem;
+            }
+        }
+    }
+}

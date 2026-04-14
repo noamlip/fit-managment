@@ -25,7 +25,8 @@ interface ConfigContextType {
     logout: () => void;
     removeTrainer: (name: string) => void;
     updatePlan: (newPlan: NutritionPlan) => void;
-    selectTrainee: (name: string) => void;
+    /** Coach only: set focused trainee, or `null` to clear */
+    selectTrainee: (name: string | null) => void;
 }
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
@@ -112,8 +113,9 @@ export const ConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }, []);
 
     const selectTrainee = useCallback(
-        (name: string) => {
-            if (userRole === 'coach') setSelectedTrainee(name);
+        (name: string | null) => {
+            if (userRole !== 'coach') return;
+            setSelectedTrainee(name && name.trim() ? name.trim() : null);
         },
         [userRole]
     );

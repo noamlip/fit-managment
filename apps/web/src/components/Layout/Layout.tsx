@@ -1,7 +1,8 @@
 import { Sidebar } from './Sidebar';
+import { CoachContextBar } from '../CoachContextBar/CoachContextBar';
 import './Layout.scss';
 
-export type AppPage = 'home' | 'payments' | 'workouts' | 'nutrition' | 'settings';
+export type AppPage = 'home' | 'payments' | 'workouts' | 'nutrition' | 'settings' | 'library';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -13,7 +14,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activePage, onNavigate
     return (
         <div className="layout-container">
             <Sidebar activePage={activePage} onNavigate={onNavigate} />
-            <main className="main-content">{children}</main>
+            <main className="main-content">
+                <CoachContextBar />
+                {children}
+            </main>
         </div>
     );
 };

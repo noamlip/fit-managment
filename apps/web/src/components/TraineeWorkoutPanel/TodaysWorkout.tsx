@@ -4,11 +4,19 @@ import type { DailyWorkout, WorkoutTemplate, Exercise } from '../../types';
 interface ITodaysWorkoutProps {
     schedule: DailyWorkout | undefined;
     templates: WorkoutTemplate[];
+    /** When the day has no per-date exercises, use this list (routines + template resolution). */
+    exercisesForToday: Exercise[];
     isCompleted: boolean;
     onStart: () => void;
 }
 
-export const TodaysWorkout: React.FC<ITodaysWorkoutProps> = ({ schedule, templates, isCompleted, onStart }) => {
+export const TodaysWorkout: React.FC<ITodaysWorkoutProps> = ({
+    schedule,
+    templates,
+    exercisesForToday,
+    isCompleted,
+    onStart,
+}) => {
     if (!schedule || schedule.workoutType === 'rest') {
         return (
             <div className="rest-day-view">
@@ -22,7 +30,7 @@ export const TodaysWorkout: React.FC<ITodaysWorkoutProps> = ({ schedule, templat
     }
 
     const template = templates.find((t) => t.type === schedule.workoutType);
-    const exercisesToShow = schedule.exercises?.length ? schedule.exercises : template?.exercises || [];
+    const exercisesToShow = exercisesForToday;
     const workoutName =
         template?.name || schedule.workoutType.charAt(0).toUpperCase() + schedule.workoutType.slice(1) + ' Workout';
 

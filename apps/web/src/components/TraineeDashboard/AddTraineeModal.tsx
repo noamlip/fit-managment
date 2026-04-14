@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useTrainee } from '../../context/TraineeContext';
 import type { TraineeGoals, TraineeMetrics } from '../../types';
 
@@ -25,6 +26,7 @@ const defaultGoals: TraineeGoals = {
 };
 
 export const AddTraineeModal: React.FC<Props> = ({ onClose }) => {
+    useEscapeToClose(onClose, true);
     const { addTrainee } = useTrainee();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');

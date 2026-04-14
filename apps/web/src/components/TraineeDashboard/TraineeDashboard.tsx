@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
+import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import { useConfig } from '../../context/ConfigContext';
 import { useTrainee } from '../../context/TraineeContext';
 import { useWorkout } from '../../context/WorkoutContext';
@@ -8,14 +10,29 @@ import { NutritionTable } from '../NutritionTable/NutritionTable';
 import './TraineeDashboard.scss';
 import type { Trainee } from '../../types';
 import { TraineeManager } from '../../containers/TraineeManager/TraineeManager';
+import { TraineeHubOverlay } from '../../containers/TraineeHome/TraineeHubOverlay';
+import type { AppPage } from '../Layout/Layout';
 
-export const TraineeDashboard: React.FC = () => {
-    const { userRole, trainerName, selectTrainee } = useConfig();
+interface TraineeDashboardProps {
+    onNavigate?: (page: AppPage) => void;
+}
+
+export const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ onNavigate }) => {
+    const { userRole, trainerName, selectTrainee, selectedTrainee: focusedClientName } = useConfig();
     const { trainees, deleteTrainee, updateTrainee } = useTrainee();
     const { exercises } = useWorkout();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTrainee, setSelectedTrainee] = useState<Trainee | null>(null);
     const [menuEditorOpenForTraineeId, setMenuEditorOpenForTraineeId] = useState<string | null>(null);
+    const [hubOpen, setHubOpen] = useState(false);
+
+    const activeClientForHub = useMemo(
+        () =>
+            userRole === 'coach' && focusedClientName
+                ? trainees.find((t) => t.name === focusedClientName)
+                : undefined,
+        [userRole, focusedClientName, trainees]
+    );
 
     // Filter trainees based on role
     const visibleTrainees = userRole === 'coach'
@@ -25,6 +42,9 @@ export const TraineeDashboard: React.FC = () => {
     const activeTrainees = trainees.length;
     const totalExercises = exercises.length;
     const nutritionUpdatesPending = trainees.filter((t) => t.nutritionPendingCoachReview).length;
+
+    const menuEditorOpen = !!menuEditorOpenForTraineeId && userRole === 'coach';
+    useEscapeToClose(() => setMenuEditorOpenForTraineeId(null), menuEditorOpen);
 
     return (
         <div className="trainee-dashboard">
@@ -46,7 +66,7 @@ export const TraineeDashboard: React.FC = () => {
                 </div>
             </div>
 
-            <h3 style={{ marginBottom: '1rem', color: 'rgba(255,255,255,0.8)' }}>Trainees Management</h3>
+            <h3 className="trainee-dashboard-section-title">Trainees management</h3>
 
             <div className="dashboard-grid">
                 {/* Add New Card (Coach Only) */}
@@ -77,7 +97,18 @@ export const TraineeDashboard: React.FC = () => {
                     const trainedToday = trainee.lastWorkoutDate === new Date().toISOString().split('T')[0];
 
                     return (
-                        <div key={trainee.id} className="trainee-card" onClick={() => setSelectedTrainee(trainee)}>
+                        <div
+                            key={trainee.id}
+                            className={`trainee-card ${
+                                userRole === 'coach' && focusedClientName === trainee.name
+                                    ? 'trainee-card--selected'
+                                    : ''
+                            }`}
+                            onClick={() => {
+                                setSelectedTrainee(trainee);
+                                if (userRole === 'coach') selectTrainee(trainee.name);
+                            }}
+                        >
                             <div className="card-header">
                                 <div className="avatar">
                                     {trainee.name.charAt(0).toUpperCase()}
@@ -128,6 +159,27 @@ export const TraineeDashboard: React.FC = () => {
                 })}
             </div>
 
+            {userRole === 'coach' && activeClientForHub && onNavigate && (
+                <>
+                    <button type="button" className="trainee-dashboard-hub-cta" onClick={() => setHubOpen(true)}>
+                        <span>Open client dashboard</span>
+                        <ChevronRight size={20} aria-hidden />
+                    </button>
+                    <TraineeHubOverlay
+                        variant="coach"
+                        open={hubOpen}
+                        onClose={() => setHubOpen(false)}
+                        activeTrainee={activeClientForHub}
+                        trainerName={activeClientForHub.name}
+                        onGoToWorkouts={() => {
+                            setHubOpen(false);
+                            onNavigate('workouts');
+                        }}
+                        updateTrainee={updateTrainee}
+                    />
+                </>
+            )}
+
             {isModalOpen && <AddTraineeModal onClose={() => setIsModalOpen(false)} />}
 
             {selectedTrainee && (
@@ -159,8 +211,8 @@ export const TraineeDashboard: React.FC = () => {
                                 Close
                             </button>
                         </div>
-                        <div className="coach-menu-editor-body">
-                            <NutritionTable />
+                        <div className="coach-menu-editor-body coach-menu-editor-body--nutrition">
+                            <NutritionTable hidePanelTitle variant="coach" />
                         </div>
                     </div>
                 </div>

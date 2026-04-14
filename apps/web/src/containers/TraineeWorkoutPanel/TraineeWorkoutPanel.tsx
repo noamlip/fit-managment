@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { useConfig } from '../../context/ConfigContext';
 import { useTrainee } from '../../context/TraineeContext';
 import { useWorkout } from '../../context/WorkoutContext';
@@ -10,6 +10,7 @@ import type { DailyWorkout, Exercise, FeedbackAnswers, WorkoutSessionLog } from 
 import { serializeFeedbackForStorage } from '../../lib/serializeFeedback';
 import { TodaysWorkout } from '../../components/TraineeWorkoutPanel/TodaysWorkout';
 import { WeekStrip } from '../../components/TraineeWorkoutPanel/WeekStrip';
+import { CoachWorkoutHistory } from '../../components/TraineeWorkoutPanel/CoachWorkoutHistory';
 import './TraineeWorkoutPanel.scss';
 
 interface WeekDayInfo {
@@ -23,7 +24,7 @@ interface WeekDayInfo {
 }
 
 export const TraineeWorkoutPanel: React.FC = () => {
-    const { trainerName } = useConfig();
+    const { trainerName, userRole, selectedTrainee } = useConfig();
     const { trainees, updateTrainee } = useTrainee();
     const { templates } = useWorkout();
     const { addToast } = useToast();
@@ -31,8 +32,17 @@ export const TraineeWorkoutPanel: React.FC = () => {
 
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [showSessionModal, setShowSessionModal] = useState(false);
+    const [coachHistoryDate, setCoachHistoryDate] = useState<string | null>(null);
 
-    const activeTrainee = useMemo(() => trainees.find((t) => t.name === trainerName), [trainees, trainerName]);
+    const subjectName = userRole === 'coach' ? selectedTrainee : trainerName;
+    const activeTrainee = useMemo(
+        () => (subjectName ? trainees.find((t) => t.name === subjectName) : undefined),
+        [trainees, subjectName]
+    );
+
+    useEffect(() => {
+        setCoachHistoryDate(null);
+    }, [activeTrainee?.id, userRole]);
     const todayStr = new Date().toISOString().split('T')[0];
     const todaysSchedule = activeTrainee?.schedule?.[todayStr];
     const isCompleted = todaysSchedule?.status === 'completed';
@@ -43,8 +53,12 @@ export const TraineeWorkoutPanel: React.FC = () => {
         if (todaysSchedule.exercises && todaysSchedule.exercises.length > 0) {
             return todaysSchedule.exercises;
         }
+        const fromRoutines = activeTrainee?.routines?.[todaysSchedule.workoutType];
+        if (fromRoutines && fromRoutines.length > 0) {
+            return fromRoutines;
+        }
         return template?.exercises || [];
-    }, [todaysSchedule, templates]);
+    }, [todaysSchedule, templates, activeTrainee?.routines]);
 
     const resumeLog = useMemo(() => {
         const log = todaysSchedule?.sessionLog;
@@ -193,10 +207,20 @@ export const TraineeWorkoutPanel: React.FC = () => {
             )}
             <header className="panel-header">
                 <div className="welcome">
-                    <h1>Hello, {trainerName}</h1>
-                    <p>Ready to crush your goals today?</p>
+                    {userRole === 'coach' ? (
+                        <p className="panel-subtitle coach-workouts-subtitle">
+                            Use workout history below for any date range, then the week strip and today&apos;s session
+                            (same view the trainee sees).
+                        </p>
+                    ) : (
+                        <>
+                            <h1>Hello, {trainerName}</h1>
+                            <p>Ready to crush your goals today?</p>
+                        </>
+                    )}
                 </div>
             </header>
+
 
             <WeekStrip days={weekDays} />
 
@@ -204,10 +228,18 @@ export const TraineeWorkoutPanel: React.FC = () => {
                 <TodaysWorkout
                     schedule={todaysSchedule}
                     templates={templates}
+                    exercisesForToday={planExercises}
                     isCompleted={isCompleted}
                     onStart={onStartWorkout}
-                />
+                    />
             </div>
+            {userRole === 'coach' && activeTrainee && (
+                <CoachWorkoutHistory
+                    trainee={activeTrainee}
+                    selectedDetailDate={coachHistoryDate}
+                    onSelectDetailDate={setCoachHistoryDate}
+                />
+            )}
         </div>
     );
 };

@@ -6,6 +6,7 @@ import {
     LogOut,
     Activity,
     CreditCard,
+    Library,
 } from 'lucide-react';
 import './Sidebar.scss';
 import { useConfig } from '../../context/ConfigContext';
@@ -46,25 +47,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate }) => {
                     </div>
                 )}
 
-                {!isCoach && (
-                    <>
-                        <div
-                            className={`nav-item ${activePage === 'workouts' ? 'active' : ''}`}
-                            onClick={() => onNavigate('workouts')}
-                        >
-                            <Dumbbell className="icon" />
-                            <span>Workouts</span>
-                        </div>
-
-                        <div
-                            className={`nav-item ${activePage === 'nutrition' ? 'active' : ''}`}
-                            onClick={() => onNavigate('nutrition')}
-                        >
-                            <Utensils className="icon" />
-                            <span>Nutrition</span>
-                        </div>
-                    </>
+                {isCoach && (
+                    <div
+                        className={`nav-item ${activePage === 'library' ? 'active' : ''}`}
+                        onClick={() => onNavigate('library')}
+                    >
+                        <Library className="icon" />
+                        <span>Exercise library</span>
+                    </div>
                 )}
+
+                <div
+                    className={`nav-item ${activePage === 'workouts' ? 'active' : ''}`}
+                    onClick={() => onNavigate('workouts')}
+                >
+                    <Dumbbell className="icon" />
+                    <span>Workouts</span>
+                </div>
+
+                <div
+                    className={`nav-item ${activePage === 'nutrition' ? 'active' : ''}`}
+                    onClick={() => onNavigate('nutrition')}
+                >
+                    <Utensils className="icon" />
+                    <span>Nutrition</span>
+                </div>
 
                 <div
                     className={`nav-item ${activePage === 'settings' ? 'active' : ''}`}

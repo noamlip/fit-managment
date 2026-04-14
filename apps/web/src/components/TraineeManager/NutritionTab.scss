@@ -1,0 +1,100 @@
+@use '../../styles/variables' as *;
+
+/* Coach: Manage trainee → Nutrition — targets + entry to daily menu editor */
+.nutrition-assignment {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    > h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: $text-primary;
+        letter-spacing: 0.02em;
+    }
+
+    .nutrition-assignment-lead {
+        margin: -0.35rem 0 0;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: $text-secondary;
+    }
+
+    .macros-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+        gap: 0.75rem 1rem;
+    }
+
+    .macro-card {
+        @include glassmorphism;
+        padding: 0.85rem 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba($primary-cyan, 0.12);
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-width: 0;
+
+        label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: $text-secondary;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.5rem 0.6rem;
+            border-radius: 8px;
+            border: 1px solid $border-color;
+            background: rgba(0, 0, 0, 0.28);
+            color: $text-primary;
+            font-size: 0.95rem;
+            font-weight: 600;
+
+            &:focus {
+                outline: none;
+                border-color: rgba($primary-cyan, 0.55);
+                box-shadow: 0 0 0 2px rgba($primary-cyan, 0.12);
+            }
+        }
+    }
+
+    .edit-plan-btn {
+        align-self: flex-start;
+        width: 100%;
+        max-width: 20rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        border: 1px solid rgba($primary-cyan, 0.55);
+        background: linear-gradient(135deg, rgba($primary-cyan, 0.22), rgba($primary-cyan, 0.08));
+        color: $primary-cyan;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s, transform 0.15s;
+
+        &:hover {
+            border-color: rgba($primary-cyan, 0.85);
+            background: linear-gradient(135deg, rgba($primary-cyan, 0.3), rgba($primary-cyan, 0.12));
+        }
+
+        &:active {
+            transform: scale(0.99);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .nutrition-assignment .macros-overview {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .nutrition-assignment .edit-plan-btn {
+        max-width: none;
+    }
+}

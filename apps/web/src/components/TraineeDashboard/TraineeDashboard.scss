@@ -8,6 +8,45 @@
         text-shadow: 0 0 10px rgba($primary-cyan, 0.3);
     }
 
+    .trainee-dashboard-section-title {
+        margin: 0 0 1rem;
+        color: $text-secondary;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+        gap: 1rem 1.25rem;
+        margin-bottom: 2rem;
+
+        .stat-card {
+            @include glassmorphism;
+            padding: 1rem 1.15rem;
+            border-radius: 12px;
+            border: 1px solid rgba($primary-cyan, 0.12);
+            min-width: 0;
+
+            h3 {
+                margin: 0 0 0.35rem;
+                font-size: 0.72rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: $text-secondary;
+            }
+
+            .value {
+                font-size: 1.65rem;
+                font-weight: 800;
+                color: $text-primary;
+                line-height: 1.1;
+            }
+        }
+    }
+
     .dashboard-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -38,11 +77,16 @@
             @include glassmorphism;
             padding: 1.5rem;
             position: relative;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 
             &:hover {
                 transform: translateY(-5px);
                 @include neon-border;
+            }
+
+            &.trainee-card--selected {
+                border-color: rgba($primary-cyan, 0.55);
+                box-shadow: 0 0 0 1px rgba($primary-cyan, 0.35), 0 8px 28px rgba($primary-cyan, 0.12);
             }
 
             .card-header {
@@ -148,6 +192,30 @@
                     }
                 }
             }
+        }
+    }
+
+    .trainee-dashboard-hub-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 28rem;
+        margin: 1.5rem auto 0;
+        padding: 0.85rem 1.25rem;
+        border-radius: 12px;
+        border: 1px solid rgba($primary-cyan, 0.35);
+        background: rgba($primary-cyan, 0.1);
+        color: $primary-cyan;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+
+        &:hover {
+            background: rgba($primary-cyan, 0.18);
+            border-color: rgba($primary-cyan, 0.55);
         }
     }
 }
@@ -308,6 +376,7 @@
     .coach-menu-editor-panel {
         width: min(960px, 100%);
         max-height: min(90vh, 900px);
+        min-height: 0;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -351,5 +420,73 @@
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
+
+        &--nutrition {
+            flex: 1;
+            min-height: 0;
+            padding-top: 0.75rem;
+            background: linear-gradient(180deg, rgba($primary-cyan, 0.04) 0%, transparent 12rem);
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .trainee-dashboard {
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+    }
+}
+
+@media (max-width: 520px) {
+    .trainee-dashboard {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .trainee-dashboard-hub-cta {
+            max-width: none;
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.88rem;
+        }
+
+        .stats-row {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+            margin-bottom: 1.25rem;
+
+            .stat-card {
+                padding: 0.75rem 0.85rem;
+
+                .value {
+                    font-size: 1.35rem;
+                }
+            }
+        }
+    }
+
+    .trainee-dashboard .coach-menu-editor-overlay {
+        padding: 0.5rem;
+        align-items: stretch;
+    }
+
+    .trainee-dashboard .coach-menu-editor-panel {
+        max-height: none;
+        height: 100%;
+        min-height: 0;
+        border-radius: 12px;
+    }
+
+    .trainee-dashboard .coach-menu-editor-head {
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 }
