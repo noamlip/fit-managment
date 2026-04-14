@@ -78,7 +78,8 @@ export function ExerciseLibraryPage() {
     const removePart = useCallback((part: string) => {
         if (!confirm(`Remove body part "${part}" and all its exercises?`)) return;
         setDraft((prev) => {
-            const { [part]: _, ...rest } = prev;
+            const rest = { ...prev };
+            delete rest[part];
             return rest;
         });
     }, []);

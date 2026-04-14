@@ -31,7 +31,7 @@ export const AddTraineeModal: React.FC<Props> = ({ onClose }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [metrics, setMetrics] = useState<TraineeMetrics>({ ...defaultMetrics });
-    const [goals, setGoals] = useState<TraineeGoals>({ ...defaultGoals });
+    const [goals] = useState<TraineeGoals>({ ...defaultGoals });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
