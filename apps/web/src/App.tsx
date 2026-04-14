@@ -80,7 +80,7 @@ const Content = () => {
                     (userRole === 'coach' ? (
                         <TraineeDashboard onNavigate={setActivePage} />
                     ) : (
-                        <TraineeHome onNavigate={setActivePage} />
+                        <TraineeHome />
                     ))}
 
                 {activePage === 'payments' && userRole === 'coach' && <PaymentsPage />}
