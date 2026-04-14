@@ -8,6 +8,7 @@ import React, {
     type ReactNode,
 } from 'react';
 import type { Exercise, ExerciseCatalog, WorkoutTemplate, WorkoutType } from '../types';
+import { apiBase } from '../services/apiBase';
 
 interface WorkoutContextType {
     exercises: Exercise[];
@@ -20,7 +21,7 @@ interface WorkoutContextType {
 
 const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
-const EXERCISES_URL = '/data/exercises.json';
+const STATIC_EXERCISES_URL = '/data/exercises.json';
 
 function catalogToExerciseLibrary(catalog: ExerciseCatalog): Exercise[] {
     const list: Exercise[] = [];
@@ -75,8 +76,19 @@ function defaultTemplates(catalog: ExerciseCatalog): WorkoutTemplate[] {
 }
 
 async function loadCatalogFromNetwork(bustCache: boolean): Promise<ExerciseCatalog> {
-    const url = bustCache ? `${EXERCISES_URL}?t=${Date.now()}` : EXERCISES_URL;
-    const res = await fetch(url);
+    const base = apiBase();
+    const apiPath = `${base}/api/exercises`;
+    const apiUrl = bustCache ? `${apiPath}?t=${Date.now()}` : apiPath;
+    try {
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+            return (await res.json()) as ExerciseCatalog;
+        }
+    } catch {
+        /* fall back to static JSON for local/offline */
+    }
+    const staticUrl = bustCache ? `${STATIC_EXERCISES_URL}?t=${Date.now()}` : STATIC_EXERCISES_URL;
+    const res = await fetch(staticUrl);
     if (!res.ok) throw new Error('Failed to load exercises');
     return (await res.json()) as ExerciseCatalog;
 }

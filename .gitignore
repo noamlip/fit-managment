@@ -1,4 +1,5 @@
 node_modules
+apps/api/lib
 dist
 dist-ssr
 .nx/cache

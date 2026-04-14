@@ -2,8 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [main, master,nl/feature/trainers]
+    branches: [main, master, nl/feature/trainers]
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   nx:
@@ -14,8 +17,62 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+<<<<<<< HEAD
           cache-dependency-path: package.json
       - run: npm install
       - run: npx nx run web:build
+=======
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: VITE_API_BASE_URL= npx nx run web:build
+>>>>>>> b74bd2d (v3)
       - run: npx nx run web:lint
       - run: npx nx run api:typecheck
+      - run: npx nx run api:build
+
+  deploy-firebase:
+    runs-on: ubuntu-latest
+    needs: nx
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Build web for Firebase Hosting
+        run: VITE_API_BASE_URL= npx nx run web:build
+      - name: Build API for Cloud Functions
+        run: npx nx run api:build
+      - name: Deploy hosting, functions, and Firestore rules
+        run: npx firebase-tools@13 deploy --only hosting,functions,firestore:rules --non-interactive
+
+  hosting-preview:
+    runs-on: ubuntu-latest
+    needs: nx
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Build web for preview (same-origin /api rewrites)
+        run: VITE_API_BASE_URL= npx nx run web:build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 30d

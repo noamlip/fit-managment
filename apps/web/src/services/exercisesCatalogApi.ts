@@ -1,12 +1,5 @@
 import type { ExerciseCatalog } from '../types';
-
-function apiBase(): string {
-    const env = import.meta.env.VITE_API_BASE_URL;
-    if (typeof env === 'string' && env.trim()) {
-        return env.replace(/\/$/, '');
-    }
-    return 'http://localhost:3001';
-}
+import { apiBase } from './apiBase';
 
 export async function saveExerciseCatalog(catalog: ExerciseCatalog): Promise<void> {
     const res = await fetch(`${apiBase()}/api/exercises`, {

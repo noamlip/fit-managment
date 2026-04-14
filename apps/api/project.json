@@ -25,6 +25,13 @@
         "cwd": "apps/api",
         "command": "npm run typecheck"
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/api",
+        "command": "npm run build"
+      }
     }
   }
 }
