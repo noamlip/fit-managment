@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main, master, nl/feature/trainers]
   pull_request:
 
 permissions:
@@ -49,7 +48,6 @@ jobs:
   hosting-preview:
     runs-on: ubuntu-latest
     needs: nx
-    if: github.event_name == 'pull_request'
     permissions:
       contents: read
       pull-requests: write
@@ -69,4 +67,37 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: pr-${{ github.event.pull_request.number }}
+          expires: 30d
+
+  # Preview channel per branch when pushing without a PR (no PR comment; URL in job log / Deployments).
+  hosting-preview-branch:
+    runs-on: ubuntu-latest
+    needs: nx
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Sanitize branch name for Firebase channel id
+        id: channel
+        run: |
+          raw="${GITHUB_REF_NAME,,}"
+          safe=$(printf '%s' "$raw" | tr '/' '-' | tr -c 'a-z0-9-\n' '-' | tr -s '-' | sed 's/^-//;s/-$//')
+          test -n "$safe" || safe=branch
+          c="branch-${safe}"
+          c="${c:0:63}"
+          echo "channel_id=$c" >> "$GITHUB_OUTPUT"
+      - name: Build web for preview (same-origin /api rewrites)
+        run: VITE_API_BASE_URL= npx nx run web:build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: ${{ steps.channel.outputs.channel_id }}
           expires: 30d

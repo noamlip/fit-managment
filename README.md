@@ -49,7 +49,7 @@ With `USE_FIRESTORE=false` (default locally), the API reads and writes JSON unde
    npx firebase-tools deploy --only hosting,functions,firestore:rules
    ```
 
-**CI:** pushes to `main` or `master` run `firebase deploy` (hosting, functions, Firestore rules). Pull requests get a **Firebase Hosting preview channel** (`pr-<number>`) and a PR comment with the preview URL via `FirebaseExtended/action-hosting-deploy`.
+**CI:** pushes to `main` or `master` run `firebase deploy` (hosting, functions, Firestore rules). Pull requests get a **Firebase Hosting preview channel** (`pr-<number>`) and a PR comment with the preview URL. Pushes to **other branches** deploy a preview channel named `branch-<sanitized-ref>` (URL in the GitHub Actions job log and Deployments; no PR comment).
 
 **Preview caveat:** Hosting preview channels still use the same Cloud Function and Firestore as production unless you add a separate staging project.
 
