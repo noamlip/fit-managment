@@ -45,69 +45,96 @@ jobs:
       - name: Deploy hosting, functions, and Firestore rules
         run: npx firebase-tools@13 deploy --only hosting,functions,firestore:rules --non-interactive
 
-  hosting-preview:
+  # Static preview on GitHub Pages under previews/<slug>/ (API calls go to Firebase — Pages cannot host /api).
+  github-pages-preview:
     runs-on: ubuntu-latest
     needs: nx
-    if: github.event_name == 'pull_request'
+    if: vars.FIREBASE_HOSTING_ORIGIN != '' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'))
+    concurrency:
+      group: gh-pages-preview-${{ github.repository }}
+      cancel-in-progress: false
     environment:
-      name: firebase-preview
-      url: ${{ steps.firebase_preview.outputs.details_url }}
+      name: github-pages-preview
+      url: ${{ steps.pages.outputs.page_url }}
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       deployments: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - run: npm ci
-      - name: Build web for preview (same-origin /api rewrites)
-        run: VITE_API_BASE_URL= npx nx run web:build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        id: firebase_preview
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: pr-${{ github.event.pull_request.number }}
-          expires: 30d
-
-  # Preview channel per branch push (non-main). Shows under GitHub Environments → firebase-preview.
-  hosting-preview-branch:
-    runs-on: ubuntu-latest
-    needs: nx
-    if: github.event_name == 'push'
-    environment:
-      name: firebase-preview
-      url: ${{ steps.firebase_preview.outputs.details_url }}
-    permissions:
-      contents: read
-      deployments: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - run: npm ci
-      - name: Sanitize branch name for Firebase channel id
-        id: channel
+      - name: Preview slug (PR number or sanitized branch)
+        id: slug
         run: |
-          raw="${GITHUB_REF_NAME,,}"
-          safe=$(printf '%s' "$raw" | tr '/' '-' | tr -c 'a-z0-9-\n' '-' | tr -s '-' | sed 's/^-//;s/-$//')
-          test -n "$safe" || safe=branch
-          c="branch-${safe}"
-          c="${c:0:63}"
-          echo "channel_id=$c" >> "$GITHUB_OUTPUT"
-      - name: Build web for preview (same-origin /api rewrites)
-        run: VITE_API_BASE_URL= npx nx run web:build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        id: firebase_preview
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "safe=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          else
+            raw="${GITHUB_REF_NAME,,}"
+            s=$(printf '%s' "$raw" | tr '/' '-' | tr -c 'a-z0-9-\n' '-' | tr -s '-' | sed 's/^-//;s/-$//')
+            test -n "$s" || s=branch
+            echo "safe=${s:0:60}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Vite base path and public preview URL
+        id: pages
+        env:
+          SAFE: ${{ steps.slug.outputs.safe }}
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          if [ "$REPO" = "${OWNER}.github.io" ]; then
+            echo "vite_base=/previews/${SAFE}/" >> "$GITHUB_OUTPUT"
+            echo "page_url=https://${OWNER}.github.io/previews/${SAFE}/" >> "$GITHUB_OUTPUT"
+            echo "dest_dir=previews/${SAFE}" >> "$GITHUB_OUTPUT"
+          else
+            echo "vite_base=/${REPO}/previews/${SAFE}/" >> "$GITHUB_OUTPUT"
+            echo "page_url=https://${OWNER}.github.io/${REPO}/previews/${SAFE}/" >> "$GITHUB_OUTPUT"
+            echo "dest_dir=previews/${SAFE}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          channelId: ${{ steps.channel.outputs.channel_id }}
-          expires: 30d
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Build web for GitHub Pages
+        env:
+          GITHUB_PAGES_BASE: ${{ steps.pages.outputs.vite_base }}
+          VITE_API_BASE_URL: ${{ vars.FIREBASE_HOSTING_ORIGIN }}
+        run: npx nx run web:build
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: apps/web/dist
+          destination_dir: ${{ steps.pages.outputs.dest_dir }}
+          keep_files: true
+      - name: Comment PR with GitHub Pages URL
+        if: github.event_name == 'pull_request'
+        env:
+          PAGE_URL: ${{ steps.pages.outputs.page_url }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- github-pages-preview -->';
+            const url = process.env.PAGE_URL;
+            const body = `${marker}\n**GitHub Pages preview:** ${url}`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

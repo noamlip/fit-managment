@@ -49,9 +49,11 @@ With `USE_FIRESTORE=false` (default locally), the API reads and writes JSON unde
    npx firebase-tools deploy --only hosting,functions,firestore:rules
    ```
 
-**CI:** pushes to `main` or `master` run `firebase deploy` (hosting, functions, Firestore rules). Pull requests and **non-main branch pushes** deploy a Firebase Hosting preview and register a **GitHub Environment** named `firebase-preview` with the preview URL (visible under **Settings → Environments** and on the repo’s **Deployments** / commit status). PRs also get a comment with the link. Branch channels use id `branch-<sanitized-ref>`.
+**CI:** pushes to `main` or `master` run `firebase deploy` (hosting, functions, Firestore rules).
 
-**Preview caveat:** Hosting preview channels still use the same Cloud Function and Firestore as production unless you add a separate staging project.
+**GitHub Pages previews** (PRs and non-`main`/`master` pushes): the workflow builds the SPA with a subpath base and publishes to the **`gh-pages`** branch under `previews/<slug>/` (`pr-<number>` or a sanitized branch name). Enable **Settings → Pages → Build and deployment → Branch `gh-pages` / (root)**. Add a repository **variable** `FIREBASE_HOSTING_ORIGIN` with your live Firebase Hosting origin (no trailing slash), e.g. `https://your-project.web.app`, so the static site can call the real API (GitHub Pages cannot host `/api`). The job registers the **github-pages-preview** environment with the preview URL; PRs get an auto-updated comment with the link.
+
+**Preview caveat:** Previews use production Firebase API/Firestore unless you point `FIREBASE_HOSTING_ORIGIN` at another deployment.
 
 ## Projects
 
