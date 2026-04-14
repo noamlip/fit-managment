@@ -78,7 +78,7 @@ jobs:
   hosting-preview-branch:
     runs-on: ubuntu-latest
     needs: nx
-    if: github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
+    if: github.event_name == 'push'
     environment:
       name: firebase-preview
       url: ${{ steps.firebase_preview.outputs.details_url }}
