@@ -1,4 +1,5 @@
-import type { AppConfig, FoodItem, NutritionPlan } from '../types';
+import type { AppConfig, FoodItem } from '../types';
+import { migrateNutritionPlan } from '../lib/nutritionPlanMigration';
 
 export const ConfigService = {
     async fetchConfig(): Promise<AppConfig> {
@@ -10,7 +11,7 @@ export const ConfigService = {
         if (!trainerRes.ok) throw new Error('Failed to load trainer config');
         if (!nutritionRes.ok) throw new Error('Failed to load nutrition');
         const trainer = (await trainerRes.json()) as { trainerName: string; programName: string };
-        const nutritionWrap = (await nutritionRes.json()) as { nutrition: NutritionPlan };
+        const nutritionWrap = (await nutritionRes.json()) as { nutrition: unknown };
         let foodDatabase: FoodItem[] | undefined;
         if (foodsRes.ok) {
             foodDatabase = (await foodsRes.json()) as FoodItem[];
@@ -18,7 +19,7 @@ export const ConfigService = {
         return {
             trainerName: trainer.trainerName,
             programName: trainer.programName,
-            nutrition: nutritionWrap.nutrition,
+            nutrition: migrateNutritionPlan(nutritionWrap.nutrition),
             foodDatabase,
         };
     },

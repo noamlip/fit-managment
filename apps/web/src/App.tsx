@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { ConfigProvider, useConfig } from './context/ConfigContext';
+import { NutritionPlanCommitProvider } from './context/NutritionPlanCommitContext';
 
 import { TrainerSelection } from './components/TrainerSelection/TrainerSelection';
 import { Layout, type AppPage } from './components/Layout/Layout';
@@ -8,9 +9,6 @@ import { WorkoutProvider } from './context/WorkoutContext';
 
 const NutritionTable = lazy(() =>
     import('./components/NutritionTable/NutritionTable.tsx').then((m) => ({ default: m.NutritionTable }))
-);
-const MenuEditor = lazy(() =>
-    import('./components/MenuEditor/MenuEditor.tsx').then((m) => ({ default: m.MenuEditor }))
 );
 const TraineeDashboard = lazy(() =>
     import('./components/TraineeDashboard/TraineeDashboard.tsx').then((m) => ({ default: m.TraineeDashboard }))
@@ -78,12 +76,7 @@ const Content = () => {
 
                 {activePage === 'workouts' && userRole !== 'coach' && <TraineeWorkoutPanel />}
 
-                {activePage === 'nutrition' && userRole !== 'coach' && (
-                    <>
-                        <NutritionTable />
-                        <MenuEditor />
-                    </>
-                )}
+                {activePage === 'nutrition' && userRole !== 'coach' && <NutritionTable />}
 
                 {activePage === 'settings' && <Settings />}
             </Suspense>
@@ -95,9 +88,11 @@ function App() {
     return (
         <ConfigProvider>
             <TraineeProvider>
-                <WorkoutProvider>
-                    <Content />
-                </WorkoutProvider>
+                <NutritionPlanCommitProvider>
+                    <WorkoutProvider>
+                        <Content />
+                    </WorkoutProvider>
+                </NutritionPlanCommitProvider>
             </TraineeProvider>
         </ConfigProvider>
     );

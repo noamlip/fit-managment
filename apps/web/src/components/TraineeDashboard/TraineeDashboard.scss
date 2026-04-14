@@ -68,6 +68,20 @@
                         color: $text-primary;
                     }
 
+                    .nutrition-review-badge {
+                        display: inline-block;
+                        margin-top: 0.35rem;
+                        padding: 0.2rem 0.5rem;
+                        font-size: 0.7rem;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                        border-radius: 6px;
+                        background: rgba(255, 180, 50, 0.2);
+                        border: 1px solid rgba(255, 200, 80, 0.55);
+                        color: #ffc850;
+                    }
+
                     p {
                         margin: 0;
                         font-size: 0.85rem;

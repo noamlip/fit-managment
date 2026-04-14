@@ -5,7 +5,6 @@ import { useWorkout } from '../../context/WorkoutContext';
 import { Plus, Trash2 } from 'lucide-react';
 import { AddTraineeModal } from './AddTraineeModal';
 import { NutritionTable } from '../NutritionTable/NutritionTable';
-import { MenuEditor } from '../MenuEditor/MenuEditor';
 import './TraineeDashboard.scss';
 import type { Trainee } from '../../types';
 import { TraineeManager } from '../../containers/TraineeManager/TraineeManager';
@@ -25,6 +24,7 @@ export const TraineeDashboard: React.FC = () => {
 
     const activeTrainees = trainees.length;
     const totalExercises = exercises.length;
+    const nutritionUpdatesPending = trainees.filter((t) => t.nutritionPendingCoachReview).length;
 
     return (
         <div className="trainee-dashboard">
@@ -40,10 +40,9 @@ export const TraineeDashboard: React.FC = () => {
                     <h3>Library Exercises</h3>
                     <div className="value">{totalExercises}</div>
                 </div>
-                {/* Placeholder for future stat */}
                 <div className="stat-card">
-                    <h3>Pending Check-ins</h3>
-                    <div className="value" style={{ color: 'rgba(255,255,255,0.3)' }}>0</div>
+                    <h3>Nutrition updates</h3>
+                    <div className="value">{nutritionUpdatesPending}</div>
                 </div>
             </div>
 
@@ -88,6 +87,9 @@ export const TraineeDashboard: React.FC = () => {
                                     <p className={trainedToday ? 'status-active' : 'status-inactive'}>
                                         {trainedToday ? 'Trained Today' : 'Not Trained Yet'}
                                     </p>
+                                    {trainee.nutritionPendingCoachReview && (
+                                        <span className="nutrition-review-badge">Menu updated</span>
+                                    )}
                                 </div>
                             </div>
 
@@ -159,7 +161,6 @@ export const TraineeDashboard: React.FC = () => {
                         </div>
                         <div className="coach-menu-editor-body">
                             <NutritionTable />
-                            <MenuEditor />
                         </div>
                     </div>
                 </div>

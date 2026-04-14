@@ -10,9 +10,22 @@ export interface FoodItem {
     [key: string]: string | number;
 }
 
+/** One named meal block in the daily nutrition plan */
+export interface Meal {
+    id: string;
+    title: string;
+    items: FoodItem[];
+}
+
 export interface NutritionPlan {
-    dailyPlan: FoodItem[];
+    meals: Meal[];
+}
+
+/** Legacy shape from older JSON / localStorage */
+export interface LegacyNutritionPlan {
+    dailyPlan?: FoodItem[];
     mealTitles?: Record<number, string>;
+    meals?: Meal[];
 }
 
 export interface AppConfig {
@@ -126,6 +139,10 @@ export interface Trainee {
     payment?: TraineePayment;
     /** Coach last acknowledged workout feedback (ISO timestamp) */
     coachLastSeenWorkoutFeedbackAt?: string;
+    /** Trainee changed daily menu; coach should review */
+    nutritionPendingCoachReview?: boolean;
+    /** When the trainee last saved nutrition edits (ISO) */
+    nutritionLastEditedByTraineeAt?: string;
 }
 
 export type DigestionStatus = 'good' | 'ok' | 'poor';

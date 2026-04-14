@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import type { AppConfig, FoodItem, NutritionPlan, UserRole } from '../types';
 import { ConfigService } from '../services/ConfigService';
+import { migrateNutritionPlan } from '../lib/nutritionPlanMigration';
 
 interface ConfigContextType {
     config: AppConfig | null;
@@ -79,7 +80,7 @@ export const ConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         const saved = localStorage.getItem(`nutrition_plan_${traineeKey}`);
         if (saved) {
             try {
-                setCurrentPlan(JSON.parse(saved) as NutritionPlan);
+                setCurrentPlan(migrateNutritionPlan(JSON.parse(saved)));
             } catch {
                 setCurrentPlan(baseConfig.nutrition);
             }
