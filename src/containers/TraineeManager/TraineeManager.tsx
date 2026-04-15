@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useToast } from '../../context/ToastContext';
 import { ProgressTab } from '../../components/TraineeManager/ProgressTab';
+import { PhotosTab } from '../../components/TraineeManager/PhotosTab';
 import { FeedbackTab } from '../../components/TraineeManager/FeedbackTab';
 import { WeeklyCheckinsTab } from '../../components/TraineeManager/WeeklyCheckinsTab';
 import { WorkoutBuilder } from '../../components/ContentBuilder/WorkoutBuilder';
 import { WorkoutsTab } from '../../components/TraineeManager/WorkoutsTab';
 import { NutritionTab } from '../../components/TraineeManager/NutritionTab';
-import { X, Dumbbell, Utensils, Activity, MessageSquare, ClipboardCheck } from 'lucide-react';
+import { X, Dumbbell, Utensils, Activity, MessageSquare, ClipboardCheck, Camera } from 'lucide-react';
 import type { Trainee, WorkoutType } from '../../types';
 import './TraineeManager.scss';
 
@@ -17,7 +18,7 @@ interface ITraineeManagerProps {
 }
 
 export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClose, onUpdate }) => {
-    const [activeTab, setActiveTab] = useState<'workouts' | 'nutrition' | 'progress' | 'feedback' | 'checkins'>('workouts');
+    const [activeTab, setActiveTab] = useState<'workouts' | 'nutrition' | 'progress' | 'feedback' | 'checkins' | 'photos'>('progress');
     const { addToast } = useToast();
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [showBuilder, setShowBuilder] = useState(false);
@@ -96,20 +97,23 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClos
                 </div>
 
                 <div className="manager-tabs">
+                    <button className={activeTab === 'progress' ? 'active' : ''} onClick={() => setActiveTab('progress')}>
+                        <Activity size={18} /> Progress
+                    </button>
                     <button className={activeTab === 'workouts' ? 'active' : ''} onClick={() => setActiveTab('workouts')}>
                         <Dumbbell size={18} /> Workouts
                     </button>
                     <button className={activeTab === 'nutrition' ? 'active' : ''} onClick={() => setActiveTab('nutrition')}>
                         <Utensils size={18} /> Nutrition
                     </button>
-                    <button className={activeTab === 'progress' ? 'active' : ''} onClick={() => setActiveTab('progress')}>
-                        <Activity size={18} /> Progress
-                    </button>
                     <button className={activeTab === 'feedback' ? 'active' : ''} onClick={() => setActiveTab('feedback')}>
                         <MessageSquare size={18} /> Daily Feed
                     </button>
                     <button className={activeTab === 'checkins' ? 'active' : ''} onClick={() => setActiveTab('checkins')}>
                         <ClipboardCheck size={18} /> Check-ins
+                    </button>
+                    <button className={activeTab === 'photos' ? 'active' : ''} onClick={() => setActiveTab('photos')}>
+                        <Camera size={18} /> Photos
                     </button>
                 </div>
 
@@ -130,6 +134,7 @@ export const TraineeManager: React.FC<ITraineeManagerProps> = ({ trainee, onClos
                         />
                     )}
                     {activeTab === 'progress' && <ProgressTab trainee={trainee} />}
+                    {activeTab === 'photos' && <PhotosTab trainee={trainee} />}
                     {activeTab === 'feedback' && <FeedbackTab trainee={trainee} />}
                     {activeTab === 'checkins' && <WeeklyCheckinsTab trainee={trainee} />}
                 </div>

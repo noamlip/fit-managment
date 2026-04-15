@@ -6,9 +6,10 @@ import './GoalsOverview.scss';
 
 interface IPropsGoalsOverview {
     activeTrainee: Trainee | undefined;
+    readOnly?: boolean;
 }
 
-export const GoalsOverview: React.FC<IPropsGoalsOverview> = ({ activeTrainee }) => {
+export const GoalsOverview: React.FC<IPropsGoalsOverview> = ({ activeTrainee, readOnly }) => {
     const { updateTrainee } = useTrainee();
 
     const goals = activeTrainee?.goals;
@@ -81,23 +82,25 @@ export const GoalsOverview: React.FC<IPropsGoalsOverview> = ({ activeTrainee }) 
                         {waterIntakeLiters} <small> / {targetLiters}L</small>
                     </span>
                 </div>
-                <div className="water-actions">
-                    <button 
-                        className="add-water-btn add" 
-                        onClick={() => handleAddWater(250)} 
-                        title="Add 250ml"
-                    >
-                        +
-                    </button>
-                    <button 
-                        className="add-water-btn remove" 
-                        onClick={() => handleAddWater(-250)} 
-                        disabled={(activeTrainee?.waterIntake || 0) <= 0} 
-                        title="Remove 250ml"
-                    >
-                        -
-                    </button>
-                </div>
+                {!readOnly && (
+                    <div className="water-actions">
+                        <button 
+                            className="add-water-btn add" 
+                            onClick={() => handleAddWater(250)} 
+                            title="Add 250ml"
+                        >
+                            +
+                        </button>
+                        <button 
+                            className="add-water-btn remove" 
+                            onClick={() => handleAddWater(-250)} 
+                            disabled={(activeTrainee?.waterIntake || 0) <= 0} 
+                            title="Remove 250ml"
+                        >
+                            -
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
