@@ -9,7 +9,11 @@
     display: flex;
     align-items: stretch;
     justify-content: stretch;
-    padding: 0;
+    padding-top: max(0.35rem, env(safe-area-inset-top, 0px));
+    padding-bottom: max(0.35rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max($layout-gutter-phone, env(safe-area-inset-left, 0px));
+    padding-right: max($layout-gutter-phone, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
     animation: traineeHubFade 0.2s ease-out;
 }
 
@@ -159,9 +163,10 @@
     margin: 0;
 }
 
-@media (min-width: 900px) {
+@media (min-width: $bp-nav) {
     .trainee-hub-overlay {
-        padding: 1rem;
+        padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px))
+            max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
         align-items: center;
         justify-content: center;
     }

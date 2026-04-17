@@ -53,7 +53,7 @@
             border: 1px solid $border-color;
             background: rgba(0, 0, 0, 0.28);
             color: $text-primary;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
 
             &:focus {
@@ -89,7 +89,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $bp-sm) {
     .nutrition-assignment .macros-overview {
         grid-template-columns: 1fr 1fr;
     }

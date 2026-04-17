@@ -49,7 +49,7 @@
 
     .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
         gap: 2rem;
 
         .add-card {
@@ -284,6 +284,7 @@
                 padding: 0.8rem;
                 border-radius: 8px;
                 color: $text-primary;
+                font-size: 1rem;
                 outline: none;
 
                 &:focus {
@@ -430,7 +431,7 @@
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: $bp-nav) {
     .trainee-dashboard {
         h2 {
             font-size: 1.5rem;
@@ -438,14 +439,18 @@
         }
 
         .dashboard-grid {
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
             gap: 1.25rem;
         }
     }
 }
 
-@media (max-width: 520px) {
+@media (max-width: $bp-sm) {
     .trainee-dashboard {
+        h2 {
+            font-size: 1.35rem;
+        }
+
         .dashboard-grid {
             grid-template-columns: 1fr;
             gap: 1rem;

@@ -71,7 +71,7 @@
     min-height: 0;
 }
 
-@media (max-width: 720px) {
+@media (max-width: $bp-manager) {
     .modal-overlay {
         padding: 0.5rem;
         align-items: stretch;

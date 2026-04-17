@@ -211,7 +211,7 @@
 }
 
 /* Tablet / narrow: stack catalog + plan, shared vertical space */
-@media (max-width: 768px) {
+@media (max-width: $bp-lg) {
     .workout-builder-modal {
         max-height: min(92dvh, 100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
         padding: 0.85rem 0.75rem;
@@ -247,10 +247,14 @@
             justify-self: end;
         }
     }
+
+    .workout-builder-modal .plan .plan-field input {
+        font-size: 1rem;
+    }
 }
 
 /* Full-bleed modal on phones — avoids tiny floating box */
-@media (max-width: 520px) {
+@media (max-width: $bp-compact) {
     .workout-builder-overlay {
         align-items: stretch;
         padding: 0;
@@ -286,7 +290,7 @@
 }
 
 /* Very short viewports: give plan slightly more room */
-@media (max-width: 520px) and (max-height: 620px) {
+@media (max-width: $bp-compact) and (max-height: 620px) {
     .workout-builder-modal .wb-body {
         grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
     }

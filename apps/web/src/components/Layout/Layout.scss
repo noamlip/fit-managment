@@ -15,7 +15,44 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-width: 1600px;
+    margin-inline: auto;
+    box-sizing: border-box;
     animation: fadeIn 0.5s ease-out;
+}
+
+.layout-backdrop {
+    display: none;
+}
+
+.layout-mobile-bar {
+    display: none;
+}
+
+.layout-mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba($primary-cyan, 0.25);
+    background: rgba(0, 0, 0, 0.35);
+    color: $text-primary;
+    cursor: pointer;
+
+    &:hover {
+        border-color: rgba($primary-cyan, 0.45);
+        color: $primary-cyan;
+    }
+}
+
+.layout-mobile-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 @keyframes fadeIn {
@@ -27,15 +64,78 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $bp-lg) {
     .layout-container .main-content {
-        padding: 1rem;
         width: 100%;
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+        padding-left: max($layout-gutter, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter, env(safe-area-inset-right, 0px));
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $bp-nav) {
+    .layout-container--mobile-nav {
+        display: block;
+        position: relative;
+
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding-top: 0.85rem;
+        }
+
+        &.layout-container--nav-open .layout-backdrop {
+            display: block;
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            margin: 0;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.55);
+        }
+    }
+
+    .layout-mobile-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        margin-top: -0.85rem;
+        margin-bottom: 0.85rem;
+        margin-left: calc(-1 * max($layout-gutter, env(safe-area-inset-left, 0px)));
+        margin-right: calc(-1 * max($layout-gutter, env(safe-area-inset-right, 0px)));
+        padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+        padding-bottom: 0.5rem;
+        padding-left: max($layout-gutter, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter, env(safe-area-inset-right, 0px));
+        background: linear-gradient(to bottom, $bg-dark 60%, transparent);
+    }
+}
+
+@media (max-width: $bp-sm) {
     .layout-container .main-content {
-        padding: 0.75rem 0.65rem;
+        padding-top: 0.85rem;
+        padding-bottom: 1.25rem;
+        padding-left: max($layout-gutter-phone, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter-phone, env(safe-area-inset-right, 0px));
+    }
+
+    .layout-container--mobile-nav .layout-mobile-bar {
+        margin-left: calc(-1 * max($layout-gutter-phone, env(safe-area-inset-left, 0px)));
+        margin-right: calc(-1 * max($layout-gutter-phone, env(safe-area-inset-right, 0px)));
+        padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+        padding-left: max($layout-gutter-phone, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter-phone, env(safe-area-inset-right, 0px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .layout-container .main-content {
+        animation: none;
     }
 }

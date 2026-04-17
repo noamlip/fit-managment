@@ -97,3 +97,27 @@
         }
     }
 }
+
+@media (max-width: $bp-lg) {
+    .trainer-selection {
+        padding-top: max(1.5rem, env(safe-area-inset-top, 0px));
+        padding-bottom: 2rem;
+        padding-left: max($layout-gutter, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter, env(safe-area-inset-right, 0px));
+    }
+
+    .trainer-selection .login-card {
+        padding: 2rem 1.5rem;
+    }
+}
+
+@media (max-width: $bp-sm) {
+    .trainer-selection {
+        padding-left: max($layout-gutter-phone, env(safe-area-inset-left, 0px));
+        padding-right: max($layout-gutter-phone, env(safe-area-inset-right, 0px));
+    }
+
+    .trainer-selection .login-card {
+        padding: 1.5rem 1.25rem;
+    }
+}

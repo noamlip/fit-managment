@@ -12,10 +12,7 @@
         line-height: 1.45;
     }
 
-    @media (max-width: 520px) {
-        .panel-header .welcome {
-            padding: 0 0.15rem;
-        }
+    @media (max-width: $bp-compact) {
         .coach-workouts-subtitle {
             font-size: 0.88rem;
         }

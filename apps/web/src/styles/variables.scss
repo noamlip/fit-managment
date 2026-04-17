@@ -1,3 +1,22 @@
+// Layout: sidebar becomes off-canvas drawer at or below this width.
+$bp-nav: 900px;
+// Fine-grained phone tuning (typography, tight grids).
+$bp-sm: 480px;
+// Tablet / two-column break (coach panels, context bar).
+$bp-md: 640px;
+// Common tablet width (forms, chrome).
+$bp-lg: 768px;
+// Trainee manager modal full-height layout.
+$bp-manager: 720px;
+// Large phone / tight workout UIs.
+$bp-lg-phone: 560px;
+// Compact phone (short modals, tight grids).
+$bp-compact: 520px;
+
+// Horizontal inset for main scroll area (Layout); pair with safe-area env() in Layout.scss.
+$layout-gutter: 1.125rem;
+$layout-gutter-phone: 1.25rem;
+
 $primary-cyan: #00f2ff;
 $bg-dark: #0a0a0c;
 $text-primary: #ffffff;

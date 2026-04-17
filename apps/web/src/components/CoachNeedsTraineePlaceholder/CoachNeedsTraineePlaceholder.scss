@@ -36,7 +36,7 @@
     }
 }
 
-@media (max-width: 520px) {
+@media (max-width: $bp-compact) {
     .coach-needs-trainee {
         margin: 1rem 0;
         padding: 1.25rem 1rem;

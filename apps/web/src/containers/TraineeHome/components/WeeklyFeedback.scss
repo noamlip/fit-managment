@@ -80,7 +80,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 24px;
 
-            @media (max-width: 768px) {
+            @media (max-width: $bp-lg) {
                 grid-template-columns: 1fr;
             }
         }

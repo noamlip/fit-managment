@@ -1,6 +1,15 @@
+@use '../../styles/variables' as *;
+
 .payments-page {
     padding: 1.5rem 2rem;
-    max-width: 1200px;
+    max-width: min(1200px, 100%);
+    box-sizing: border-box;
+}
+
+@media (max-width: $bp-lg) {
+    .payments-page {
+        padding: 1.25rem 0;
+    }
 }
 
 .payments-header {
@@ -80,8 +89,9 @@
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
     padding: 1.5rem;
-    max-width: 480px;
+    max-width: min(480px, calc(100vw - 2rem));
     width: 100%;
+    box-sizing: border-box;
 
     h2 {
         margin: 0 0 1rem;
@@ -109,6 +119,7 @@
         border: 1px solid rgba(255, 255, 255, 0.15);
         background: rgba(0, 0, 0, 0.35);
         color: #fff;
+        font-size: 1rem;
     }
 }
 
@@ -136,4 +147,14 @@
     padding: 0.5rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
+}
+
+@media (max-width: $bp-sm) {
+    .payments-page {
+        padding: 1rem 0;
+    }
+
+    .payments-header h1 {
+        font-size: 1.35rem;
+    }
 }
