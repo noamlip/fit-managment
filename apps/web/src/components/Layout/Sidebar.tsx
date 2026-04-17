@@ -50,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <aside className={asideClass} aria-hidden={isMobileDrawer ? !drawerOpen : undefined}>
             <div className="brand">
                 <Activity className="logo-icon" size={28} />
-                <h1>Anti-Gravity</h1>
+                <h1>TOMER-ZONE</h1>
             </div>
 
             <nav id="app-sidebar-nav">

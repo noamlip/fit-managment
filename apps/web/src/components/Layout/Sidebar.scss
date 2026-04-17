@@ -5,10 +5,15 @@
     width: 20%;
     min-width: 12rem;
     max-width: 18rem;
-    height: 97vh;
+    align-self: stretch;
+    min-height: 0;
+    max-height: 100%;
+    height: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
+    overflow: hidden;
     z-index: 100;
     border-right: 1px solid rgba($primary-cyan, 0.2);
     border-radius: 0;
@@ -16,6 +21,7 @@
 
     .brand {
         margin-bottom: 3rem;
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         gap: 0.8rem;
@@ -35,6 +41,9 @@
         flex-direction: column;
         gap: 0.5rem;
         flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         .nav-item {
             display: flex;
             align-items: center;
@@ -59,6 +68,7 @@
 
     .user-profile {
         margin-top: auto;
+        flex-shrink: 0;
         padding-top: 1.5rem;
         border-top: 1px solid $border-color;
         display: flex;
@@ -107,10 +117,10 @@
         width: min(18rem, 85vw);
         max-width: none;
         min-width: 0;
-        height: 100vh;
-        height: 100dvh;
         top: 0;
+        bottom: 0;
         left: 0;
+        height: auto;
         position: fixed;
         margin: 0;
         padding-top: max(1.5rem, env(safe-area-inset-top, 0px));
