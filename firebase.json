@@ -6,6 +6,7 @@
     {
       "source": "apps/api",
       "codebase": "default",
+      "runtime": "nodejs20",
       "ignore": [
         "node_modules",
         ".git",
@@ -16,7 +17,7 @@
         "tsconfig.json",
         "tsconfig.build.json"
       ],
-      "predeploy": ["npx nx run api:build"]
+      "predeploy": ["npm ci", "npx nx run api:build"]
     }
   ],
   "hosting": {
@@ -25,7 +26,10 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "function": "api"
+        "function": {
+          "functionId": "api",
+          "region": "us-central1"
+        }
       },
       {
         "source": "**",

@@ -2,28 +2,30 @@
   "name": "@anti-gravity/api",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "main": "lib/index.js",
   "engines": {
     "node": "20"
   },
   "scripts": {
-    "dev": "tsx watch server.ts",
-    "start": "tsx server.ts",
+    "dev": "tsc-watch -p tsconfig.build.json --onSuccess \"node lib/src/main.js\"",
+    "start": "npm run build && node lib/src/main.js",
     "build": "tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "cors": "^2.8.6",
+    "@nestjs/common": "^11.1.11",
+    "@nestjs/core": "^11.1.11",
+    "@nestjs/platform-express": "^11.1.11",
     "express": "^5.2.1",
     "firebase-admin": "^13.8.0",
-    "firebase-functions": "^7.2.5"
+    "firebase-functions": "^7.2.5",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.10.1",
-    "tsx": "^4.21.0",
+    "tsc-watch": "^7.2.0",
     "typescript": "~5.9.3"
   }
 }

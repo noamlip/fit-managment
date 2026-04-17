@@ -8,18 +8,19 @@
   "scripts": {
     "nx": "nx",
     "install:all": "npm install",
-    "dev:all": "concurrently -k -n web,api -c cyan,magenta \"npm run dev -w @anti-gravity/web\" \"npm run dev -w @anti-gravity/api\"",
-    "run:all": "npm run dev:all",
+    "dev": "nx run-many -t dev -p web,api --parallel=2 --outputStyle=tui",
+    "dev:all": "npm run dev",
+    "run:all": "npm run dev",
     "build": "nx run web:build",
     "build:all": "nx run-many -t build --projects=web",
     "dev:web": "nx run web:dev",
     "dev:api": "nx run api:dev",
     "lint": "nx run web:lint",
     "typecheck:api": "nx run api:typecheck",
-    "graph": "nx graph"
+    "graph": "nx graph",
+    "deploy:hosting": "npm run build && npx firebase-tools@13 deploy --only hosting --project fit-managment"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "nx": "~21.6.0"
   }
 }
