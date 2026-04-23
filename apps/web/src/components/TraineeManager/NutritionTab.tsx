@@ -54,7 +54,7 @@ export const NutritionTab: React.FC<INutritionTabProps> = ({ trainee, onUpdate, 
         <div className="nutrition-assignment">
             <h3>Nutrition plan targets</h3>
             <p className="nutrition-assignment-lead">
-                Set daily macro targets for this trainee, then open the full day menu to add meals and foods.
+                Set daily macro targets, then define separate menus for training days and rest days.
             </p>
             <div className="macros-overview">
                 <div className="macro-card">
@@ -89,7 +89,7 @@ export const NutritionTab: React.FC<INutritionTabProps> = ({ trainee, onUpdate, 
                 </div>
             </div>
             <button type="button" className="edit-plan-btn" onClick={onEditMenu}>
-                Edit Daily Menu
+                Edit Training/Rest Menus
             </button>
         </div>
     );

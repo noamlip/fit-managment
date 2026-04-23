@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, onNavigate }) => {
                 </div>
 
                 <div
-                    className={`nav-item ${activePage === 'nutrition' ? 'active' : ''}`}
+                    className={`nav-item ${activePage === 'nutrition' || activePage === 'nutrition-shopping' ? 'active' : ''}`}
                     onClick={() => onNavigate('nutrition')}
                 >
                     <Utensils className="icon" />

@@ -19,6 +19,10 @@ export interface Meal {
 
 export interface NutritionPlan {
     meals: Meal[];
+    trainingDayMeals?: Meal[];
+    restDayMeals?: Meal[];
+    dayTypes?: Record<string, 'training' | 'rest'>;
+    dayMeals?: Record<string, Meal[]>;
 }
 
 /** Legacy shape from older JSON / localStorage */

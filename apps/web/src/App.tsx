@@ -40,6 +40,11 @@ const ExerciseLibraryPage = lazy(() =>
         default: m.ExerciseLibraryPage,
     }))
 );
+const NutritionShoppingPage = lazy(() =>
+    import('./containers/NutritionShoppingPage/NutritionShoppingPage.tsx').then((m) => ({
+        default: m.NutritionShoppingPage,
+    }))
+);
 
 function RouteFallback() {
     return (
@@ -113,8 +118,14 @@ const Content = () => {
                             <NutritionTable hidePanelTitle variant="coach" />
                         </CoachPageChrome>
                     ) : (
-                        <NutritionTable />
+                        <NutritionTable
+                            onOpenShoppingList={() => setActivePage('nutrition-shopping')}
+                        />
                     )
+                )}
+
+                {activePage === 'nutrition-shopping' && userRole === 'trainer' && (
+                    <NutritionShoppingPage onBack={() => setActivePage('nutrition')} />
                 )}
 
                 {activePage === 'library' && userRole === 'coach' && (

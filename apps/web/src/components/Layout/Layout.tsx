@@ -2,7 +2,14 @@ import { Sidebar } from './Sidebar';
 import { CoachContextBar } from '../CoachContextBar/CoachContextBar';
 import './Layout.scss';
 
-export type AppPage = 'home' | 'payments' | 'workouts' | 'nutrition' | 'settings' | 'library';
+export type AppPage =
+    | 'home'
+    | 'payments'
+    | 'workouts'
+    | 'nutrition'
+    | 'nutrition-shopping'
+    | 'settings'
+    | 'library';
 
 interface LayoutProps {
     children: React.ReactNode;

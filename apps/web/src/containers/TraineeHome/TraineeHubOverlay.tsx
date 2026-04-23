@@ -5,6 +5,7 @@ import { GoalsOverview } from './components/GoalsOverview';
 import { WeeklyFeedback } from './components/WeeklyFeedback';
 import { RoutineTemplatesEditor } from './components/RoutineTemplatesEditor';
 import { NutritionTable } from '../../components/NutritionTable/NutritionTable';
+import { NutritionShoppingPage } from '../NutritionShoppingPage/NutritionShoppingPage';
 import { useEscapeToClose } from '../../hooks/useEscapeToClose';
 import './TraineeHubOverlay.scss';
 
@@ -32,6 +33,7 @@ export const TraineeHubOverlay: FC<Props> = ({
 }) => {
     const isCoach = variant === 'coach';
     const [tab, setTab] = useState<HubTab>('overview');
+    const [nutritionSub, setNutritionSub] = useState<'plan' | 'shopping'>('plan');
     const [escapeSuspended, setEscapeSuspended] = useState(false);
 
     useEscapeToClose(onClose, open && !escapeSuspended);
@@ -39,6 +41,10 @@ export const TraineeHubOverlay: FC<Props> = ({
     useEffect(() => {
         if (isCoach && tab === 'templates') setTab('overview');
     }, [isCoach, tab]);
+
+    useEffect(() => {
+        if (tab !== 'nutrition') setNutritionSub('plan');
+    }, [tab]);
 
     if (!open) return null;
 
@@ -119,7 +125,16 @@ export const TraineeHubOverlay: FC<Props> = ({
                     )}
                     {tab === 'nutrition' && (
                         <div className="trainee-hub-scroll">
-                            <NutritionTable />
+                            {nutritionSub === 'shopping' ? (
+                                <NutritionShoppingPage onBack={() => setNutritionSub('plan')} />
+                            ) : (
+                                <NutritionTable
+                                    readOnly={!isCoach}
+                                    onOpenShoppingList={
+                                        !isCoach ? () => setNutritionSub('shopping') : undefined
+                                    }
+                                />
+                            )}
                         </div>
                     )}
                     {tab === 'templates' && !isCoach && (

@@ -20,10 +20,134 @@
     }
 }
 
+.nutrition-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.nutrition-cart-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba($primary-cyan, 0.45);
+    background: rgba($primary-cyan, 0.12);
+    color: $primary-cyan;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba($primary-cyan, 0.22);
+        border-color: rgba($primary-cyan, 0.75);
+    }
+}
+
 .nutrition-panel-title {
     color: $primary-cyan;
-    margin: 0 0 0.25rem;
+    margin: 0;
     font-size: 1.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.nutrition-day-selector {
+    @include glassmorphism;
+    padding: 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba($primary-cyan, 0.16);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.nutrition-date-chips {
+    display: flex;
+    gap: 0.55rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+}
+
+.nutrition-date-chip {
+    border: 1px solid $border-color;
+    background: rgba(0, 0, 0, 0.18);
+    color: $text-secondary;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &.is-active {
+        border-color: rgba($primary-cyan, 0.9);
+        color: $primary-cyan;
+        background: rgba($primary-cyan, 0.14);
+    }
+}
+
+.nutrition-day-type-toggle {
+    display: inline-flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    button {
+        border: 1px solid $border-color;
+        background: rgba(0, 0, 0, 0.2);
+        color: $text-secondary;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 0.45rem 0.8rem;
+        cursor: pointer;
+    }
+
+    button.is-active {
+        border-color: rgba($primary-cyan, 0.9);
+        background: rgba($primary-cyan, 0.16);
+        color: $primary-cyan;
+    }
+}
+
+.nutrition-day-context {
+    margin: -0.25rem 0 0;
+    color: $text-secondary;
+    font-size: 0.86rem;
+
+    strong {
+        color: #fff;
+    }
+}
+
+.nutrition-day-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.nutrition-save-day-btn {
+    border: 1px solid rgba($primary-cyan, 0.65);
+    background: rgba($primary-cyan, 0.15);
+    color: $primary-cyan;
+    border-radius: 10px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
+.nutrition-save-day-state {
+    color: $text-secondary;
+    font-size: 0.82rem;
 }
 
 .nutrition-meal {
@@ -38,6 +162,15 @@
     gap: 0.75rem;
     margin-bottom: 1rem;
     flex-wrap: wrap;
+}
+
+.nutrition-meal-title-static {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    flex: 1;
+    min-width: 0;
 }
 
 .nutrition-meal-title-input {
@@ -82,7 +215,7 @@
 
 .nutrition-meal-table {
     width: 100%;
-    min-width: 32rem;
+    min-width: 22rem;
     font-size: 0.9rem;
     border-collapse: collapse;
     th {
@@ -98,6 +231,32 @@
         border-bottom: 1px solid $border-color;
         vertical-align: middle;
     }
+
+    &--readonly {
+        min-width: 18rem;
+    }
+}
+
+.nutrition-item-cell {
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nutrition-qty-cell {
+    white-space: nowrap;
+}
+
+.nutrition-qty-readonly {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.nutrition-macro-inline {
+    white-space: nowrap;
+    font-size: 0.82rem;
+    color: $text-secondary;
 }
 
 .nutrition-qty-input {
@@ -195,6 +354,11 @@
     border-top: 1px solid $border-color;
     color: $text-secondary;
     font-size: 0.85rem;
+
+    &--inline {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
 }
 
 .nutrition-add-meal {
