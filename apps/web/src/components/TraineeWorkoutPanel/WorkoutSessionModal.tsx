@@ -1,22 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { Play } from 'lucide-react';
 import { useEscapeToClose } from '../../hooks/useEscapeToClose';
-import type {
-    Exercise,
-    LoggedExercise,
-    LoggedSet,
-    WorkoutSessionDraftCursor,
-    WorkoutSessionLog,
-} from '../../types';
+import type { Exercise, FeedbackAnswers, FeedbackQuestion, WorkoutSessionLog } from '../../types';
 import './WorkoutSessionModal.scss';
 
-function findCursor(exercises: LoggedExercise[]): { exIdx: number; setNum: number } | null {
-    for (let i = 0; i < exercises.length; i++) {
-        if (exercises[i].sets.length < exercises[i].plannedSets) {
-            return { exIdx: i, setNum: exercises[i].sets.length + 1 };
-        }
-    }
-    return null;
+function formatClock(totalSec: number): string {
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
 function canResume(resume: WorkoutSessionLog, plan: Exercise[]): boolean {
@@ -25,230 +17,256 @@ function canResume(resume: WorkoutSessionLog, plan: Exercise[]): boolean {
     return resume.exercises.every((le, i) => le.exerciseId === plan[i].id);
 }
 
-function formatClock(totalSec: number): string {
-    const m = Math.floor(totalSec / 60);
-    const s = totalSec % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
+function toEmbedUrl(url: string): string {
+    if (url.includes('youtube.com/watch?v=')) {
+        const id = new URL(url).searchParams.get('v');
+        return id ? `https://www.youtube.com/embed/${id}` : url;
+    }
+    if (url.includes('youtu.be/')) {
+        const id = url.split('youtu.be/')[1]?.split('?')[0];
+        return id ? `https://www.youtube.com/embed/${id}` : url;
+    }
+    return url;
+}
+
+interface SetEntry {
+    weight: string;
+    reps: string;
+}
+
+function parseTargetReps(text: string): number {
+    const direct = Number.parseFloat(text.replace(',', '.'));
+    if (Number.isFinite(direct)) return direct;
+    const first = text.match(/\d+(\.\d+)?/);
+    return first ? Number.parseFloat(first[0]) : 0;
+}
+
+interface ExerciseEntry {
+    notes: string;
+    sets: SetEntry[];
 }
 
 interface WorkoutSessionModalProps {
     open: boolean;
     exercises: Exercise[];
+    isTraineeReadOnly: boolean;
     resumeLog?: WorkoutSessionLog | null;
+    previousCompletedLog?: WorkoutSessionLog | null;
+    feedbackQuestions: FeedbackQuestion[];
+    initialFeedback: FeedbackAnswers;
     onCancel: () => void;
-    onFinish: (log: WorkoutSessionLog) => void;
+    onDiscardDraft: () => void;
+    onFinish: (log: WorkoutSessionLog, answers: FeedbackAnswers) => void;
     onPersistDraft: (log: WorkoutSessionLog) => void;
 }
 
 export const WorkoutSessionModal: React.FC<WorkoutSessionModalProps> = ({
     open,
     exercises,
+    isTraineeReadOnly,
     resumeLog,
+    previousCompletedLog,
+    feedbackQuestions,
+    initialFeedback,
     onCancel,
+    onDiscardDraft,
     onFinish,
     onPersistDraft,
 }) => {
-    useEscapeToClose(onCancel, open);
-    const [elapsedSec, setElapsedSec] = useState(0);
-    const [sessionLog, setSessionLog] = useState<WorkoutSessionLog>(() => ({
-        startedAt: new Date().toISOString(),
-        exercises: [],
-        restExtensions: [],
-    }));
-    const [phase, setPhase] = useState<'work' | 'rest' | 'done'>('work');
-    const [restEndsAt, setRestEndsAt] = useState<number | null>(null);
-    const [restRemainSec, setRestRemainSec] = useState(0);
-    const [weightStr, setWeightStr] = useState('');
-    const [repsStr, setRepsStr] = useState('');
     const initializedRef = useRef(false);
-    const persistRef = useRef(onPersistDraft);
-    persistRef.current = onPersistDraft;
-
-    useEffect(() => {
-        if (!open) return;
-        const tick = () => {
-            const t0 = new Date(sessionLog.startedAt).getTime();
-            setElapsedSec(Math.max(0, Math.floor((Date.now() - t0) / 1000)));
-        };
-        tick();
-        const id = setInterval(tick, 1000);
-        return () => clearInterval(id);
-    }, [open, sessionLog.startedAt]);
+    const [startedAt, setStartedAt] = useState(new Date().toISOString());
+    const [elapsedSec, setElapsedSec] = useState(0);
+    const [entries, setEntries] = useState<ExerciseEntry[]>([]);
+    const [showExitPopup, setShowExitPopup] = useState(false);
+    const [showVideoUrl, setShowVideoUrl] = useState<string | null>(null);
+    const [restRemainSec, setRestRemainSec] = useState(0);
+    const [stage, setStage] = useState<'log' | 'review'>('log');
+    const [feedback, setFeedback] = useState<FeedbackAnswers>({});
 
     useEffect(() => {
         if (!open) {
             initializedRef.current = false;
+            setStage('log');
+            setShowVideoUrl(null);
+            setShowExitPopup(false);
             return;
         }
         if (initializedRef.current) return;
         initializedRef.current = true;
 
         if (resumeLog && canResume(resumeLog, exercises)) {
-            const { draftCursor, ...rest } = resumeLog;
-            const base: WorkoutSessionLog = { ...rest, draftCursor: undefined };
-            setSessionLog(base);
-
-            if (draftCursor?.phase === 'rest' && draftCursor.restEndsAt) {
-                const end = new Date(draftCursor.restEndsAt).getTime();
-                if (end > Date.now()) {
-                    setPhase('rest');
-                    setRestEndsAt(end);
-                } else if (!findCursor(base.exercises)) {
-                    setPhase('done');
-                    setRestEndsAt(null);
-                } else {
-                    setPhase('work');
-                    setRestEndsAt(null);
-                }
-            } else if (!findCursor(base.exercises)) {
-                setPhase('done');
-                setRestEndsAt(null);
-            } else {
-                setPhase('work');
-                setRestEndsAt(null);
-            }
+            setStartedAt(resumeLog.startedAt);
+            setEntries(
+                exercises.map((exercise, exIdx) => {
+                    const resumed = resumeLog.exercises[exIdx];
+                    const sets = Array.from({ length: exercise.sets }, (_, setIdx) => {
+                        const existing = resumed?.sets.find((s) => s.setIndex === setIdx + 1);
+                        return {
+                            weight: existing?.weightKg != null ? String(existing.weightKg) : '',
+                            reps: existing?.repsCompleted ?? exercise.reps,
+                        };
+                    });
+                    return { notes: resumed?.notes ?? exercise.notes ?? '', sets };
+                })
+            );
         } else {
-            setSessionLog({
-                startedAt: new Date().toISOString(),
-                exercises: exercises.map((ex) => ({
-                    exerciseId: ex.id,
-                    name: ex.name,
-                    plannedSets: ex.sets,
-                    sets: [],
-                })),
-                restExtensions: [],
-            });
-            setPhase('work');
-            setRestEndsAt(null);
+            setStartedAt(new Date().toISOString());
+            setEntries(
+                exercises.map((exercise) => ({
+                    notes: exercise.notes ?? '',
+                    sets: Array.from({ length: exercise.sets }, () => ({ weight: '', reps: exercise.reps })),
+                }))
+            );
         }
-    }, [open, exercises, resumeLog]);
-
-    const cursor = findCursor(sessionLog.exercises);
-    const currentExercise = cursor ? exercises[cursor.exIdx] : null;
-
-    useEffect(() => {
-        if (!open || phase !== 'work' || !currentExercise) return;
-        setRepsStr(currentExercise.reps || '');
-        setWeightStr('');
-    }, [open, phase, cursor?.exIdx, cursor?.setNum, currentExercise]);
-
-    useEffect(() => {
-        if (phase !== 'rest' || !restEndsAt) {
-            setRestRemainSec(0);
-            return;
-        }
-        const update = () => {
-            const rem = Math.max(0, Math.ceil((restEndsAt - Date.now()) / 1000));
-            setRestRemainSec(rem);
-            if (Date.now() >= restEndsAt) {
-                setPhase('work');
-                setRestEndsAt(null);
-            }
-        };
-        update();
-        const id = setInterval(update, 250);
-        return () => clearInterval(id);
-    }, [phase, restEndsAt]);
+        setFeedback({ ...initialFeedback });
+    }, [open, exercises, resumeLog, initialFeedback]);
 
     useEffect(() => {
         if (!open) return;
-        if (exercises.length === 0) return;
-        if (sessionLog.exercises.length !== exercises.length) return;
+        const tick = () => {
+            const t0 = new Date(startedAt).getTime();
+            setElapsedSec(Math.max(0, Math.floor((Date.now() - t0) / 1000)));
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [open, startedAt]);
 
-        if (phase === 'done') {
-            persistRef.current({ ...sessionLog, draftCursor: undefined });
+    useEffect(() => {
+        if (restRemainSec <= 0) return;
+        const id = setInterval(() => setRestRemainSec((prev) => Math.max(0, prev - 1)), 1000);
+        return () => clearInterval(id);
+    }, [restRemainSec]);
+
+    const buildLog = (finalized: boolean): WorkoutSessionLog => {
+        const log: WorkoutSessionLog = {
+            startedAt,
+            exercises: exercises.map((exercise, exIdx) => {
+                const exEntry = entries[exIdx];
+                return {
+                    exerciseId: exercise.id,
+                    name: exercise.name,
+                    plannedSets: exercise.sets,
+                    notes: exEntry?.notes || undefined,
+                    sets:
+                        exEntry?.sets
+                            .map((set, setIdx) => {
+                                const w = Number.parseFloat(set.weight.replace(',', '.'));
+                                const hasWeight = Number.isFinite(w) && w >= 0;
+                                if (!hasWeight) return null;
+                                const repsText = isTraineeReadOnly ? exercise.reps : set.reps.trim();
+                                return {
+                                    setIndex: setIdx + 1,
+                                    weightKg: hasWeight ? w : undefined,
+                                    repsCompleted: repsText || exercise.reps,
+                                };
+                            })
+                            .filter((s): s is NonNullable<typeof s> => Boolean(s)) ?? [],
+                };
+            }),
+            restExtensions: [],
+        };
+        if (finalized) {
+            log.endedAt = new Date().toISOString();
+            log.totalElapsedSeconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000));
+        } else {
+            log.draftCursor = { exerciseIndex: 0, setIndex: 1, phase: 'work' };
+        }
+        return log;
+    };
+
+    const previousSetMap = useMemo(() => {
+        const map = new Map<string, { weight?: number; reps?: string; volume: number }>();
+        if (!previousCompletedLog) return map;
+        for (const ex of previousCompletedLog.exercises) {
+            for (const set of ex.sets) {
+                const reps = Number.parseFloat((set.repsCompleted || '').replace(',', '.'));
+                const volume = (set.weightKg ?? 0) * (Number.isFinite(reps) ? reps : 0);
+                map.set(`${ex.exerciseId}:${set.setIndex}`, { weight: set.weightKg, reps: set.repsCompleted, volume });
+            }
+        }
+        return map;
+    }, [previousCompletedLog]);
+
+    const personalRecords = useMemo(() => {
+        const prs: Array<{ label: string; oldVolume: number; newVolume: number }> = [];
+        for (let exIdx = 0; exIdx < exercises.length; exIdx++) {
+            const ex = exercises[exIdx];
+            const rows = entries[exIdx]?.sets || [];
+            for (let setIdx = 0; setIdx < rows.length; setIdx++) {
+                const row = rows[setIdx];
+                const w = Number.parseFloat(row.weight.replace(',', '.'));
+                const r = parseTargetReps(isTraineeReadOnly ? ex.reps : row.reps);
+                if (!Number.isFinite(w) || !Number.isFinite(r)) continue;
+                const newVolume = w * r;
+                const oldVolume = previousSetMap.get(`${ex.id}:${setIdx + 1}`)?.volume ?? 0;
+                if (newVolume > oldVolume) {
+                    prs.push({
+                        label: `${ex.name} · Set ${setIdx + 1}`,
+                        oldVolume,
+                        newVolume,
+                    });
+                }
+            }
+        }
+        return prs;
+    }, [entries, exercises, previousSetMap]);
+
+    const setEntry = (exIdx: number, setIdx: number, patch: Partial<SetEntry>) => {
+        setEntries((prev) => {
+            const next = prev.map((entry) => ({ ...entry, sets: entry.sets.map((row) => ({ ...row })) }));
+            const before = next[exIdx].sets[setIdx];
+            const wasFilled = before.weight.trim().length > 0 || before.reps.trim().length > 0;
+            next[exIdx].sets[setIdx] = { ...before, ...patch };
+            const after = next[exIdx].sets[setIdx];
+            const nowFilled = after.weight.trim().length > 0 && after.reps.trim().length > 0;
+            if (!wasFilled && nowFilled) {
+                setRestRemainSec(exercises[exIdx]?.rest ?? 0);
+            }
+            return next;
+        });
+    };
+
+    const setNotes = (exIdx: number, notes: string) => {
+        setEntries((prev) => prev.map((entry, i) => (i === exIdx ? { ...entry, notes } : entry)));
+    };
+
+    const handleSaveDraftAndExit = () => {
+        onPersistDraft(buildLog(false));
+        setShowExitPopup(false);
+        onCancel();
+    };
+    const handleDiscardAndExit = () => {
+        setShowExitPopup(false);
+        onDiscardDraft();
+    };
+    const handleRequestClose = () => setShowExitPopup(true);
+    const handleMoveToReview = () => setStage('review');
+    const handleSaveWorkout = () => onFinish(buildLog(true), feedback);
+
+    const updateFeedback = (id: string, v: string | number) => {
+        setFeedback((prev) => ({ ...prev, [id]: v }));
+    };
+
+    useEscapeToClose(() => {
+        if (showVideoUrl) {
+            setShowVideoUrl(null);
             return;
         }
-
-        const c = findCursor(sessionLog.exercises);
-        const last = sessionLog.exercises[sessionLog.exercises.length - 1];
-        const draftCursor: WorkoutSessionDraftCursor = {
-            exerciseIndex: c?.exIdx ?? Math.max(0, sessionLog.exercises.length - 1),
-            setIndex: c?.setNum ?? (last ? last.plannedSets : 1),
-            phase: phase === 'rest' ? 'rest' : 'work',
-            restEndsAt:
-                phase === 'rest' && restEndsAt ? new Date(restEndsAt).toISOString() : undefined,
-        };
-        persistRef.current({ ...sessionLog, draftCursor });
-    }, [open, sessionLog, phase, restEndsAt, exercises.length]);
-
-    const handleRequestClose = () => {
-        if (window.confirm('Exit workout? In-progress data is saved as a draft; you can resume later.')) {
-            onCancel();
+        if (showExitPopup) {
+            setShowExitPopup(false);
+            return;
         }
-    };
-
-    const handleCompleteSet = () => {
-        if (!cursor || !currentExercise) return;
-
-        const w = parseFloat(weightStr.replace(',', '.'));
-        const newSet: LoggedSet = {
-            setIndex: cursor.setNum,
-            weightKg: Number.isFinite(w) && w >= 0 ? w : undefined,
-            repsCompleted: repsStr.trim() || undefined,
-        };
-
-        const newExercises = sessionLog.exercises.map((le, i) =>
-            i === cursor.exIdx ? { ...le, sets: [...le.sets, newSet] } : le
-        );
-        const nextLog: WorkoutSessionLog = { ...sessionLog, exercises: newExercises };
-        setSessionLog(nextLog);
-
-        const le = newExercises[cursor.exIdx];
-        if (le.sets.length < le.plannedSets) {
-            const restSec = currentExercise.rest ?? 90;
-            setPhase('rest');
-            setRestEndsAt(Date.now() + restSec * 1000);
-        } else if (cursor.exIdx + 1 < newExercises.length) {
-            setPhase('work');
-            setRestEndsAt(null);
-        } else {
-            setPhase('done');
-            setRestEndsAt(null);
-        }
-    };
-
-    const addRestSeconds = (sec: number) => {
-        if (!restEndsAt) return;
-        setRestEndsAt((prev) => (prev ? prev + sec * 1000 : null));
-        setSessionLog((prev) => {
-            const t0 = new Date(prev.startedAt).getTime();
-            const el = Math.max(0, Math.floor((Date.now() - t0) / 1000));
-            return {
-                ...prev,
-                restExtensions: [...(prev.restExtensions || []), { atElapsedSeconds: el, addedSeconds: sec }],
-            };
-        });
-    };
-
-    const skipRest = () => {
-        setPhase('work');
-        setRestEndsAt(null);
-    };
-
-    const handleFinish = () => {
-        const t0 = new Date(sessionLog.startedAt).getTime();
-        const total = Math.max(0, Math.floor((Date.now() - t0) / 1000));
-        onFinish({
-            ...sessionLog,
-            endedAt: new Date().toISOString(),
-            totalElapsedSeconds: total,
-            draftCursor: undefined,
-        });
-    };
+        handleRequestClose();
+    }, open);
 
     if (!open) return null;
-
-    const totalSetsPlanned = sessionLog.exercises.reduce((acc, le) => acc + le.plannedSets, 0);
-    const totalSetsDone = sessionLog.exercises.reduce((acc, le) => acc + le.sets.length, 0);
 
     const modal = (
         <div className="workout-session-modal">
             <div className="session-panel">
                 <div className="session-head">
-                    <div>
-                        <h2>Workout session</h2>
-                    </div>
+                    <h2>Workout session</h2>
                     <div className="timers">
                         <span className="elapsed-label">Elapsed</span>
                         <span className="elapsed">{formatClock(elapsedSec)}</span>
@@ -260,77 +278,161 @@ export const WorkoutSessionModal: React.FC<WorkoutSessionModalProps> = ({
                     </div>
                 </div>
 
-                <div className="session-body">
-                    {phase === 'rest' && (
-                        <div className="phase-rest">
-                            <div className="rest-label">Rest</div>
-                            <div className="rest-count">{restRemainSec}</div>
-                            <div className="add-rest-btns">
-                                <button type="button" onClick={() => addRestSeconds(30)}>
-                                    +30s rest
-                                </button>
-                                <button type="button" onClick={() => addRestSeconds(60)}>
-                                    +60s rest
-                                </button>
-                            </div>
-                            <button type="button" className="skip-rest" onClick={skipRest}>
-                                Skip rest
-                            </button>
-                        </div>
-                    )}
-
-                    {phase === 'work' && cursor && currentExercise && (
-                        <div className="phase-work">
-                            <h3 className="exercise-title">{currentExercise.name}</h3>
-                            <p className="exercise-meta">
-                                Set {cursor.setNum} of {sessionLog.exercises[cursor.exIdx].plannedSets}
-                                {' · '}
-                                Planned {currentExercise.reps} reps
-                                {currentExercise.rest != null ? ` · ${currentExercise.rest}s rest` : ''}
-                            </p>
-                            <div className="field">
-                                <label htmlFor="ws-weight">Actual weight (kg)</label>
-                                <input
-                                    id="ws-weight"
-                                    type="number"
-                                    inputMode="decimal"
-                                    min={0}
-                                    step={0.5}
-                                    placeholder="e.g. 60"
-                                    value={weightStr}
-                                    onChange={(e) => setWeightStr(e.target.value)}
-                                />
-                            </div>
-                            <div className="field">
-                                <label htmlFor="ws-reps">Reps completed (optional)</label>
-                                <input
-                                    id="ws-reps"
-                                    type="text"
-                                    placeholder={currentExercise.reps}
-                                    value={repsStr}
-                                    onChange={(e) => setRepsStr(e.target.value)}
-                                />
-                            </div>
-                            <button type="button" className="complete-set-btn" onClick={handleCompleteSet}>
-                                Complete set
-                            </button>
-                        </div>
-                    )}
-
-                    {phase === 'done' && (
-                        <div className="phase-done">
-                            <p>All sets logged. Continue to daily feedback to complete your workout.</p>
-                            <button type="button" className="finish-btn" onClick={handleFinish}>
-                                Finish workout
-                            </button>
-                        </div>
-                    )}
-
-                    <div className="progress-hint">
-                        Progress: {totalSetsDone} / {totalSetsPlanned} sets
+                {restRemainSec > 0 && (
+                    <div className="rest-banner">
+                        Rest timer: {restRemainSec}s
                     </div>
+                )}
+
+                <div className="session-body">
+                    {stage === 'log' ? (
+                        <div className="exercise-plan">
+                            {exercises.map((exercise, exIdx) => (
+                                <div key={exercise.id} className="exercise-item">
+                                    <div className="exercise-top">
+                                        <button
+                                            type="button"
+                                            className="video-btn"
+                                            onClick={() => exercise.videoUrl && setShowVideoUrl(exercise.videoUrl)}
+                                            disabled={!exercise.videoUrl}
+                                        >
+                                            <Play size={16} />
+                                            Video
+                                        </button>
+                                        <div className="exercise-main">{exercise.name}</div>
+                                    </div>
+                                    <textarea
+                                        className="exercise-notes"
+                                        value={entries[exIdx]?.notes ?? exercise.notes ?? ''}
+                                        readOnly={isTraineeReadOnly}
+                                        onChange={(e) => setNotes(exIdx, e.target.value)}
+                                    />
+                                    <div className="sets-grid-head">
+                                        <span>Weight (kg)</span>
+                                        <span>{isTraineeReadOnly ? 'Target reps' : 'Reps'}</span>
+                                    </div>
+                                    {Array.from({ length: exercise.sets }, (_, setIdx) => {
+                                        const current = entries[exIdx]?.sets[setIdx] ?? { weight: '', reps: exercise.reps };
+                                        const prev = previousSetMap.get(`${exercise.id}:${setIdx + 1}`);
+                                        return (
+                                            <div key={`${exercise.id}-${setIdx}`} className="set-row">
+                                                <input
+                                                    type="number"
+                                                    inputMode="decimal"
+                                                    min={0}
+                                                    placeholder={prev?.weight != null ? String(prev.weight) : '0'}
+                                                    value={current.weight}
+                                                    onChange={(e) => setEntry(exIdx, setIdx, { weight: e.target.value })}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={isTraineeReadOnly ? exercise.reps : current.reps}
+                                                    readOnly={isTraineeReadOnly}
+                                                    onChange={(e) => setEntry(exIdx, setIdx, { reps: e.target.value })}
+                                                />
+                                                {isTraineeReadOnly && (
+                                                    <div className="previous-row">
+                                                        Prev: {prev?.weight != null ? `${prev.weight}kg` : '-'} x {prev?.reps || '-'}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ))}
+                            <div className="phase-done">
+                                <button type="button" className="save-draft-btn" onClick={handleSaveDraftAndExit}>
+                                    Save draft and exit
+                                </button>
+                                <button type="button" className="finish-btn" onClick={handleMoveToReview}>
+                                    Finish workout
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="review-stage">
+                            <h3>Session summary</h3>
+                            {personalRecords.length === 0 ? (
+                                <p className="review-muted">No new volume PR this session.</p>
+                            ) : (
+                                <div className="pr-list">
+                                    {personalRecords.map((pr) => (
+                                        <div key={pr.label} className="pr-row">
+                                            <span>{pr.label}</span>
+                                            <strong>{Math.round(pr.oldVolume)} → {Math.round(pr.newVolume)}</strong>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <h3>Workout feedback</h3>
+                            {feedbackQuestions.map((q) => (
+                                <div key={q.id} className="feedback-row">
+                                    <label htmlFor={`fb-${q.id}`}>{q.text}{q.required ? ' *' : ''}</label>
+                                    {q.type === 'text' ? (
+                                        <textarea
+                                            id={`fb-${q.id}`}
+                                            rows={3}
+                                            value={String(feedback[q.id] ?? '')}
+                                            onChange={(e) => updateFeedback(q.id, e.target.value)}
+                                        />
+                                    ) : q.type === 'number' ? (
+                                        <input
+                                            id={`fb-${q.id}`}
+                                            type="number"
+                                            value={String(feedback[q.id] ?? '')}
+                                            onChange={(e) => updateFeedback(q.id, Number(e.target.value))}
+                                        />
+                                    ) : (
+                                        <input
+                                            id={`fb-${q.id}`}
+                                            type="range"
+                                            min={q.config?.min ?? 1}
+                                            max={q.config?.max ?? 10}
+                                            value={Number(feedback[q.id] ?? q.config?.min ?? 1)}
+                                            onChange={(e) => updateFeedback(q.id, Number(e.target.value))}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                            <button type="button" className="finish-btn" onClick={handleSaveWorkout}>
+                                Save workout
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
+
+            {showExitPopup && (
+                <div className="exit-popup-backdrop" role="presentation">
+                    <div className="exit-popup" role="dialog" aria-modal="true" aria-label="Exit workout options">
+                        <h3>Exit workout?</h3>
+                        <p>Choose how you want to leave this session.</p>
+                        <button type="button" className="save" onClick={handleSaveDraftAndExit}>
+                            Save as draft and exit
+                        </button>
+                        <button type="button" className="delete" onClick={handleDiscardAndExit}>
+                            Delete draft and exit
+                        </button>
+                        <button type="button" className="cancel" onClick={() => setShowExitPopup(false)}>
+                            Stay in workout
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {showVideoUrl && (
+                <div className="video-fullscreen" role="dialog" aria-modal="true">
+                    <button type="button" className="video-close" onClick={() => setShowVideoUrl(null)}>
+                        Close
+                    </button>
+                    {showVideoUrl.includes('youtube.com') || showVideoUrl.includes('youtu.be') ? (
+                        <iframe src={toEmbedUrl(showVideoUrl)} title="Exercise video" allowFullScreen />
+                    ) : (
+                        <video src={showVideoUrl} controls autoPlay playsInline />
+                    )}
+                </div>
+            )}
         </div>
     );
 

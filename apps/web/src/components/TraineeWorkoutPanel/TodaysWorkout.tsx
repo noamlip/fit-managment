@@ -7,6 +7,7 @@ interface ITodaysWorkoutProps {
     /** When the day has no per-date exercises, use this list (routines + template resolution). */
     exercisesForToday: Exercise[];
     isCompleted: boolean;
+    hasDraft: boolean;
     onStart: () => void;
 }
 
@@ -15,6 +16,7 @@ export const TodaysWorkout: React.FC<ITodaysWorkoutProps> = ({
     templates,
     exercisesForToday,
     isCompleted,
+    hasDraft,
     onStart,
 }) => {
     if (!schedule || schedule.workoutType === 'rest') {
@@ -62,6 +64,10 @@ export const TodaysWorkout: React.FC<ITodaysWorkoutProps> = ({
                 {isCompleted ? (
                     <>
                         Edit Feedback <CheckCircle size={16} />
+                    </>
+                ) : hasDraft ? (
+                    <>
+                        Continue Workout <Calendar size={16} />
                     </>
                 ) : (
                     <>

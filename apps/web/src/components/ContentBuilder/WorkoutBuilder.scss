@@ -182,6 +182,13 @@
                 color: #ff8888;
             }
         }
+
+        .plan-row-extra {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.35rem;
+        }
     }
 
     .wb-actions {
@@ -245,6 +252,9 @@
         .plan-row-remove {
             grid-area: remove;
             justify-self: end;
+        }
+        .plan-row-extra {
+            grid-column: 1 / -1;
         }
     }
 

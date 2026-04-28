@@ -25,7 +25,7 @@ export const WeeklyFeedback: React.FC<IProps> = ({ trainee }) => {
     const [satietyLevel1to10, setSatietyLevel1to10] = useState(5);
     const [digestion, setDigestion] = useState<DigestionStatus>('ok');
     const [photoFrontUrl, setPhotoFrontUrl] = useState<string | undefined>();
-    const [photoBarUrl, setPhotoBarUrl] = useState<string | undefined>();
+    const [photoBackUrl, setPhotoBackUrl] = useState<string | undefined>();
     const [photoSideUrl, setPhotoSideUrl] = useState<string | undefined>();
     
     if (!trainee) return null;
@@ -48,7 +48,7 @@ export const WeeklyFeedback: React.FC<IProps> = ({ trainee }) => {
             workoutProgression,
             photos,
             photoFrontUrl,
-            photoBarUrl,
+            photoBackUrl,
             photoSideUrl,
             coachReviewed: false,
         };
@@ -74,7 +74,7 @@ export const WeeklyFeedback: React.FC<IProps> = ({ trainee }) => {
         setSatietyLevel1to10(5);
         setDigestion('ok');
         setPhotoFrontUrl(undefined);
-        setPhotoBarUrl(undefined);
+        setPhotoBackUrl(undefined);
         setPhotoSideUrl(undefined);
     };
 
@@ -86,9 +86,9 @@ export const WeeklyFeedback: React.FC<IProps> = ({ trainee }) => {
     const PLACEHOLDER_IMG =
         'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop';
 
-    const setStructuredPhoto = (key: 'front' | 'bar' | 'side') => {
+    const setStructuredPhoto = (key: 'front' | 'back' | 'side') => {
         if (key === 'front') setPhotoFrontUrl(PLACEHOLDER_IMG);
-        if (key === 'bar') setPhotoBarUrl(PLACEHOLDER_IMG);
+        if (key === 'back') setPhotoBackUrl(PLACEHOLDER_IMG);
         if (key === 'side') setPhotoSideUrl(PLACEHOLDER_IMG);
     };
 
@@ -281,12 +281,12 @@ export const WeeklyFeedback: React.FC<IProps> = ({ trainee }) => {
                     </div>
 
                     <div className="photo-section structured-poses">
-                        <label>Progress photos — front, bar, side (optional)</label>
+                        <label>Progress photos — front, back, side (optional)</label>
                         <div className="structured-photo-uploads">
                             {(
                                 [
                                     { key: 'front' as const, label: 'Front', url: photoFrontUrl, set: setPhotoFrontUrl },
-                                    { key: 'bar' as const, label: 'Bar', url: photoBarUrl, set: setPhotoBarUrl },
+                                    { key: 'back' as const, label: 'Back', url: photoBackUrl, set: setPhotoBackUrl },
                                     { key: 'side' as const, label: 'Side', url: photoSideUrl, set: setPhotoSideUrl },
                                 ] as const
                             ).map(({ key, label, url, set }) => (

@@ -69,7 +69,7 @@ export const WeeklyCheckinsTab: React.FC<IProps> = ({ trainee }) => {
 
     const structuredPhotoSlots: { key: string; label: string; url?: string }[] = [
         { key: 'front', label: 'Front', url: selectedFeedback.photoFrontUrl },
-        { key: 'bar', label: 'Bar', url: selectedFeedback.photoBarUrl },
+        { key: 'back', label: 'Back', url: selectedFeedback.photoBackUrl || selectedFeedback.photoBarUrl },
         { key: 'side', label: 'Side', url: selectedFeedback.photoSideUrl },
     ];
 

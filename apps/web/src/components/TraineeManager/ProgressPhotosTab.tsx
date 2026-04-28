@@ -16,7 +16,10 @@ export const ProgressPhotosTab: React.FC<IProgressPhotosTabProps> = ({ trainee }
                 rows.push({ url, date: f.date });
             }
             if (f.photoFrontUrl) rows.push({ url: f.photoFrontUrl, date: f.date, label: 'Front' });
-            if (f.photoBarUrl) rows.push({ url: f.photoBarUrl, date: f.date, label: 'Bar' });
+            const backUrl = f.photoBackUrl || f.photoBarUrl;
+            if (backUrl) {
+                rows.push({ url: backUrl, date: f.date, label: 'Back' });
+            }
             if (f.photoSideUrl) rows.push({ url: f.photoSideUrl, date: f.date, label: 'Side' });
         }
         return rows.sort((a, b) => b.date.localeCompare(a.date));

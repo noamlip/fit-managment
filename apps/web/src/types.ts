@@ -88,6 +88,7 @@ export interface LoggedExercise {
     exerciseId: string;
     name: string;
     plannedSets: number;
+    notes?: string;
     sets: LoggedSet[];
 }
 
@@ -164,6 +165,8 @@ export interface WeeklyFeedbackRecord {
     workoutProgression: 'progressing' | 'stuck' | 'decreased';
     photos?: string[]; // URLs or base64 strings (legacy)
     photoFrontUrl?: string;
+    photoBackUrl?: string;
+    /** Legacy typo key, kept for backwards compatibility with older records. */
     photoBarUrl?: string;
     photoSideUrl?: string;
     coachReviewed?: boolean;
@@ -183,6 +186,7 @@ export interface Exercise {
     reps: string; // e.g., "8-12"
     rpe?: number;
     notes?: string;
+    videoUrl?: string;
     rest?: number; // seconds
     bodyPart?: string;
 }

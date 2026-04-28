@@ -135,6 +135,28 @@ export const WorkoutBuilder: React.FC<Props> = ({
                                     <button type="button" className="plan-row-remove" onClick={() => removeAt(idx)}>
                                         Remove
                                     </button>
+                                    <div className="plan-row-extra">
+                                        <label className="plan-field">
+                                            <span className="visually-hidden">Exercise video URL</span>
+                                            <input
+                                                type="url"
+                                                placeholder="Video URL (YouTube / MP4)"
+                                                aria-label={`Video URL for ${ex.name}`}
+                                                value={ex.videoUrl ?? ''}
+                                                onChange={(e) => updatePlanned(idx, { videoUrl: e.target.value })}
+                                            />
+                                        </label>
+                                        <label className="plan-field">
+                                            <span className="visually-hidden">Exercise notes</span>
+                                            <input
+                                                type="text"
+                                                placeholder="Exercise notes"
+                                                aria-label={`Notes for ${ex.name}`}
+                                                value={ex.notes ?? ''}
+                                                onChange={(e) => updatePlanned(idx, { notes: e.target.value })}
+                                            />
+                                        </label>
+                                    </div>
                                 </div>
                             ))
                         )}
